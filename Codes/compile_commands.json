@@ -1,0 +1,14 @@
+[
+{
+  "directory": "/home/inmove/nvme1/Learn/LearnOpenCV/Codes/build",
+  "command": "/usr/bin/g++  -I/home/inmove/nvme1/Learn/LearnOpenCV/Codes/include -isystem /home/inmove/.opt/opencv/include/opencv4 -g -std=c++17 -Wall -Wextra -Wpedantic -g -O0 -o CMakeFiles/MyOpenCVProject.dir/src/main.cpp.o -c /home/inmove/nvme1/Learn/LearnOpenCV/Codes/src/main.cpp",
+  "file": "/home/inmove/nvme1/Learn/LearnOpenCV/Codes/src/main.cpp",
+  "output": "CMakeFiles/MyOpenCVProject.dir/src/main.cpp.o"
+},
+{
+  "directory": "/home/inmove/nvme1/Learn/LearnOpenCV/Codes/build",
+  "command": "/usr/bin/g++  -I/home/inmove/nvme1/Learn/LearnOpenCV/Codes/include -I/home/inmove/nvme1/SourceCodes/googletest/googletest/include -g -std=c++17 -Wall -Wextra -Wpedantic -g -O0 -o CMakeFiles/LearnOpenCV_Test.dir/tests/main.cpp.o -c /home/inmove/nvme1/Learn/LearnOpenCV/Codes/tests/main.cpp",
+  "file": "/home/inmove/nvme1/Learn/LearnOpenCV/Codes/tests/main.cpp",
+  "output": "CMakeFiles/LearnOpenCV_Test.dir/tests/main.cpp.o"
+}
+]

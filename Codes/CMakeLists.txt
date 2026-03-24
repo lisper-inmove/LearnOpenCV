@@ -6,6 +6,9 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+# 生成编译命令数据库（用于VSCode等IDE）
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 # 设置编译选项
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     # 启用更多警告
@@ -22,39 +25,21 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     endif()
 endif()
 
-# 设置OpenCV路径（您自定义的安装路径）
-set(OpenCV_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../.opt/opencv/lib/cmake/opencv4")
-# 如果上面的路径不对，也可以使用绝对路径
-# set(OpenCV_DIR "/home/yourusername/.opt/opencv/lib/cmake/opencv4")
+include(config/main.cmake)
 
-# 查找OpenCV库
-find_package(OpenCV REQUIRED)
+if(WIN32)
+  include(config/windows/windows.cmake)
+endif()
 
-# 打印OpenCV版本信息（用于调试）
-message(STATUS "OpenCV version: ${OpenCV_VERSION}")
-message(STATUS "OpenCV include dirs: ${OpenCV_INCLUDE_DIRS}")
-message(STATUS "OpenCV libraries: ${OpenCV_LIBS}")
+if(LINUX)
+  include(config/linux/linux.cmake)
+endif()
 
-# 添加可执行文件
-add_executable(${PROJECT_NAME}
-    src/main.cpp
+include(config/opencv.cmake)
+
+add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        ${CMAKE_BINARY_DIR}/compile_commands.json
+        ${CMAKE_SOURCE_DIR}/compile_commands.json
+    COMMENT "Copying compile_commands.json to source directory"
 )
-
-# 添加头文件路径
-target_include_directories(${PROJECT_NAME} PRIVATE
-    ${OpenCV_INCLUDE_DIRS}
-    ${CMAKE_CURRENT_SOURCE_DIR}/include
-)
-
-# 链接OpenCV库
-target_link_libraries(${PROJECT_NAME}
-    ${OpenCV_LIBS}
-)
-
-# 设置输出目录（可选）
-set_target_properties(${PROJECT_NAME} PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
-)
-
-# 可选：安装规则
-install(TARGETS ${PROJECT_NAME} DESTINATION bin)
