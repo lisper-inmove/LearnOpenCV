@@ -25,6 +25,7 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     endif()
 endif()
 
+include(config/opencv.cmake)
 include(config/main.cmake)
 
 if(WIN32)
@@ -34,8 +35,6 @@ endif()
 if(LINUX)
   include(config/linux/linux.cmake)
 endif()
-
-include(config/opencv.cmake)
 
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different

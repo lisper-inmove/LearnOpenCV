@@ -3,15 +3,13 @@
  * @brief OpenCV示例程序 - 显示图像并应用简单处理
  */
 
-#include <iostream>
-#include <string>
+#include "opencv2/opencv.hpp"
+#include <ch04.h>
 
+int main()
+{
 
-int main() {
-    try {
+    ch04::ch04Test();
 
-    } catch (const std::exception& e) {
-        return -1;
-    }
     return 0;
 }
