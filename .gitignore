@@ -1,3 +1,7 @@
 build
 .cache
 Testing
+*.aux
+*.log
+*.out
+*.toc
