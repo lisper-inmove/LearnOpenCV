@@ -9,7 +9,7 @@
 int main()
 {
 
-    ch04::ch04Test();
-
+    ch04::cvMeanTest();
+    ch04::cvMeanStdDevTest();
     return 0;
 }

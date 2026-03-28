@@ -1,14 +1,26 @@
 [
 {
-  "directory": "/home/inmove/nvme1/Learn/LearnOpenCV/Codes/build/Release",
-  "command": "/usr/bin/c++  -I/home/inmove/nvme1/Learn/LearnOpenCV/Codes/include -isystem /home/inmove/.opt/opencv/include/opencv4 -O3 -DNDEBUG -std=c++17 -Wall -Wextra -Wpedantic -O3 -DNDEBUG -o CMakeFiles/MyOpenCVProject.dir/src/ch04.cc.o -c /home/inmove/nvme1/Learn/LearnOpenCV/Codes/src/ch04.cc",
+  "directory": "/home/inmove/nvme1/Learn/LearnOpenCV/Codes/build/Debug",
+  "command": "/usr/bin/g++  -I/home/inmove/nvme1/Learn/LearnOpenCV/Codes/include -isystem /home/inmove/.opt/opencv/include/opencv4 -g -std=c++17 -Wall -Wextra -Wpedantic -g -O0 -o CMakeFiles/MyOpenCVProject.dir/src/ch04.cc.o -c /home/inmove/nvme1/Learn/LearnOpenCV/Codes/src/ch04.cc",
   "file": "/home/inmove/nvme1/Learn/LearnOpenCV/Codes/src/ch04.cc",
   "output": "CMakeFiles/MyOpenCVProject.dir/src/ch04.cc.o"
 },
 {
-  "directory": "/home/inmove/nvme1/Learn/LearnOpenCV/Codes/build/Release",
-  "command": "/usr/bin/c++  -I/home/inmove/nvme1/Learn/LearnOpenCV/Codes/include -isystem /home/inmove/.opt/opencv/include/opencv4 -O3 -DNDEBUG -std=c++17 -Wall -Wextra -Wpedantic -O3 -DNDEBUG -o CMakeFiles/MyOpenCVProject.dir/src/main.cpp.o -c /home/inmove/nvme1/Learn/LearnOpenCV/Codes/src/main.cpp",
+  "directory": "/home/inmove/nvme1/Learn/LearnOpenCV/Codes/build/Debug",
+  "command": "/usr/bin/g++  -I/home/inmove/nvme1/Learn/LearnOpenCV/Codes/include -isystem /home/inmove/.opt/opencv/include/opencv4 -g -std=c++17 -Wall -Wextra -Wpedantic -g -O0 -o CMakeFiles/MyOpenCVProject.dir/src/main.cpp.o -c /home/inmove/nvme1/Learn/LearnOpenCV/Codes/src/main.cpp",
   "file": "/home/inmove/nvme1/Learn/LearnOpenCV/Codes/src/main.cpp",
   "output": "CMakeFiles/MyOpenCVProject.dir/src/main.cpp.o"
+},
+{
+  "directory": "/home/inmove/nvme1/Learn/LearnOpenCV/Codes/build/Debug",
+  "command": "/usr/bin/g++  -I/home/inmove/nvme1/SourceCodes/googletest/googletest/include -I/home/inmove/nvme1/Learn/LearnOpenCV/Codes/include -isystem /home/inmove/.opt/opencv/include/opencv4 -g -std=c++17 -Wall -Wextra -Wpedantic -g -O0 -o CMakeFiles/LearnOpenCV_Test.dir/tests/main.cpp.o -c /home/inmove/nvme1/Learn/LearnOpenCV/Codes/tests/main.cpp",
+  "file": "/home/inmove/nvme1/Learn/LearnOpenCV/Codes/tests/main.cpp",
+  "output": "CMakeFiles/LearnOpenCV_Test.dir/tests/main.cpp.o"
+},
+{
+  "directory": "/home/inmove/nvme1/Learn/LearnOpenCV/Codes/build/Debug",
+  "command": "/usr/bin/g++  -I/home/inmove/nvme1/SourceCodes/googletest/googletest/include -I/home/inmove/nvme1/Learn/LearnOpenCV/Codes/include -isystem /home/inmove/.opt/opencv/include/opencv4 -g -std=c++17 -Wall -Wextra -Wpedantic -g -O0 -o CMakeFiles/LearnOpenCV_Test.dir/src/ch04.cc.o -c /home/inmove/nvme1/Learn/LearnOpenCV/Codes/src/ch04.cc",
+  "file": "/home/inmove/nvme1/Learn/LearnOpenCV/Codes/src/ch04.cc",
+  "output": "CMakeFiles/LearnOpenCV_Test.dir/src/ch04.cc.o"
 }
 ]
