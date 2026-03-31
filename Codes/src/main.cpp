@@ -4,12 +4,8 @@
  */
 
 #include "opencv2/opencv.hpp"
-#include <ch04.h>
 
 int main()
 {
-
-    ch04::cvMeanTest();
-    ch04::cvMeanStdDevTest();
     return 0;
 }

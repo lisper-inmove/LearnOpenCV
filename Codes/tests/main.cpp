@@ -1,18 +1,7 @@
 #include <gtest/gtest.h>
-#include <ch04.h>
 
-// 测试宏：TEST(测试套件名, 测试用例名)
-TEST(OpenCVTest, Mean)
+int main(int argc, char **argv)
 {
-    ch04::cvMeanTest();
-}
-
-TEST(OpenCVTest, meanStdDev)
-{
-    ch04::cvMeanStdDevTest();
-}
-
-TEST(OpenCVTest, cvCalcHistTest)
-{
-    ch04::cvCalcHistTest();
+    ::testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
 }

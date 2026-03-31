@@ -1,0 +1,734 @@
+\documentclass{article}
+\usepackage[UTF8]{ctex}
+\usepackage{amsmath, amsthm, amssymb}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+
+\geometry{a4paper, margin=2.5cm}
+
+% 定义定理环境
+\newtheorem{definition}{定义}[section]
+\newtheorem{theorem}{定理}[section]
+\newtheorem{lemma}{引理}[section]
+\newtheorem{proposition}{命题}[section]
+\newtheorem{corollary}{推论}[section]
+\newtheorem{example}{示例}[section]
+\newtheorem{remark}{注记}[section]
+
+% 代码样式设置
+\lstset{
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue},
+    commentstyle=\color{green!60!black},
+    stringstyle=\color{red},
+    numbers=left,
+    numberstyle=\tiny,
+    breaklines=true,
+    frame=single
+}
+
+\title{\textbf{图像模糊技术：均值模糊、高斯模糊与中值模糊}}
+\author{图像处理学习者}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+\newpage
+
+\section{概述}
+图像模糊技术是数字图像处理中的基础操作，主要用于降低图像噪声、平滑细节、减少图像中的高频成分。在实际应用中，不同的模糊技术具有不同的特性和适用场景。本文将系统介绍三种最常用的图像模糊技术：均值模糊（Mean Blurring）、高斯模糊（Gaussian Blurring）和中值模糊（Median Blurring）。
+
+均值模糊是最简单的线性滤波方法，通过计算邻域像素的平均值来实现平滑；高斯模糊则使用高斯函数作为权重，在平滑的同时更好地保持边缘信息；中值模糊是一种非线性滤波方法，通过取邻域像素的中值来有效去除脉冲噪声（椒盐噪声）等离群值。
+
+这些技术在计算机视觉、图像预处理、艺术效果制作等领域都有广泛应用，理解它们的原理、特性和适用场景对于选择合适的图像处理技术至关重要。
+
+\section{基本概念与分类}
+
+\begin{definition}[线性滤波与非线性滤波]
+在图像处理中，滤波操作可以分为两类：
+\begin{itemize}
+    \item \textbf{线性滤波}：输出像素值是输入像素邻域的线性组合。均值模糊和高斯模糊属于线性滤波。
+    \item \textbf{非线性滤波}：输出像素值不是输入像素的线性函数。中值模糊属于非线性滤波。
+\end{itemize}
+\end{definition}
+
+\begin{definition}[卷积核（Kernel）]
+卷积核是一个小矩阵，用于在图像上滑动并对每个像素及其邻域进行加权求和。对于大小为 $m \times n$ 的核 $K$ 和图像 $I$，卷积操作定义为：
+\[
+I'(x,y) = \sum_{i=-a}^{a} \sum_{j=-b}^{b} K(i,j) \cdot I(x+i, y+j)
+\]
+其中 $a = \lfloor m/2 \rfloor$, $b = \lfloor n/2 \rfloor$。
+\end{definition}
+
+\section{均值模糊（Mean Blurring）}
+
+\subsection{数学定义}
+
+\begin{definition}[均值模糊]
+均值模糊，也称为平均滤波或盒式滤波（Box Filter），将图像中每个像素的值替换为其邻域内所有像素值的算术平均值。对于 $N \times N$ 的邻域窗口：
+\[
+I'(x,y) = \frac{1}{N^2} \sum_{i=-k}^{k} \sum_{j=-k}^{k} I(x+i, y+j)
+\]
+其中 $k = \lfloor N/2 \rfloor$。
+\end{definition}
+
+\subsection{滤波核表示}
+$N \times N$ 均值模糊的卷积核为：
+\[
+K_{\text{mean}} = \frac{1}{N^2} \begin{bmatrix}
+1 & 1 & \cdots & 1 \\
+1 & 1 & \cdots & 1 \\
+\vdots & \vdots & \ddots & \vdots \\
+1 & 1 & \cdots & 1
+\end{bmatrix}_{N \times N}
+\]
+
+\begin{example}[3×3均值滤波核]
+\[
+K_{\text{mean}}^{3\times3} = \frac{1}{9} \begin{bmatrix}
+1 & 1 & 1 \\
+1 & 1 & 1 \\
+1 & 1 & 1
+\end{bmatrix}
+\]
+\end{example}
+
+\subsection{特性与优缺点}
+
+\begin{itemize}
+    \item \textbf{优点}：
+    \begin{itemize}
+        \item 计算简单，只需加法和除法
+        \item 易于理解和实现
+        \item 对高斯噪声有较好的去噪效果
+        \item 保持图像整体亮度不变
+    \end{itemize}
+
+    \item \textbf{缺点}：
+    \begin{itemize}
+        \item 边缘模糊严重
+        \item 对脉冲噪声效果不佳
+        \item 会产生振铃效应
+        \item 权重均匀，无法区分信号与噪声
+    \end{itemize}
+\end{itemize}
+
+\subsection{应用场景}
+\begin{itemize}
+    \item 快速图像去噪（特别是高斯噪声）
+    \item 图像预处理和降采样
+    \item 简单背景模糊效果
+    \item 作为更复杂滤波的快速近似
+\end{itemize}
+
+\section{高斯模糊（Gaussian Blurring）}
+
+\subsection{数学定义}
+
+\begin{definition}[高斯模糊]
+高斯模糊使用二维高斯函数作为权重核进行卷积操作。二维高斯函数定义为：
+\[
+G(x,y) = \frac{1}{2\pi\sigma^2} e^{-\frac{x^2+y^2}{2\sigma^2}}
+\]
+其中 $\sigma$ 是标准差，控制模糊程度。
+\end{definition}
+
+\subsection{离散高斯核}
+在实际计算中，使用离散化的高斯核。对于 $(2k+1) \times (2k+1)$ 的高斯核：
+\[
+K_{\text{gauss}}(i,j) = \frac{1}{2\pi\sigma^2} e^{-\frac{i^2+j^2}{2\sigma^2}}, \quad i,j = -k,\dots,k
+\]
+需要归一化使得核元素之和为1。
+
+\begin{example}[3×3高斯核，$\sigma=1$]
+近似的高斯核为：
+\[
+K_{\text{gauss}}^{3\times3} \approx \frac{1}{16} \begin{bmatrix}
+1 & 2 & 1 \\
+2 & 4 & 2 \\
+1 & 2 & 1
+\end{bmatrix}
+\]
+\end{example}
+
+\subsection{高斯核的性质}
+
+\begin{theorem}[高斯核的分离性]
+二维高斯函数可以分解为两个一维高斯函数的乘积：
+\[
+G(x,y) = G(x) \cdot G(y) = \frac{1}{\sqrt{2\pi}\sigma} e^{-\frac{x^2}{2\sigma^2}} \cdot \frac{1}{\sqrt{2\pi}\sigma} e^{-\frac{y^2}{2\sigma^2}}
+\]
+这一性质使得高斯模糊可以通过先水平后垂直（或相反）两次一维卷积实现，将计算复杂度从 $O(N^2)$ 降低到 $O(2N)$。
+\end{theorem}
+
+\begin{proof}
+由二维高斯函数的定义：
+\[
+G(x,y) = \frac{1}{2\pi\sigma^2} e^{-\frac{x^2+y^2}{2\sigma^2}} = \left(\frac{1}{\sqrt{2\pi}\sigma} e^{-\frac{x^2}{2\sigma^2}}\right) \cdot \left(\frac{1}{\sqrt{2\pi}\sigma} e^{-\frac{y^2}{2\sigma^2}}\right) = G(x) \cdot G(y)
+\]
+因此，二维卷积可以分解为两次一维卷积：
+\[
+I * G(x,y) = (I * G(x)) * G(y)
+\]
+\end{proof}
+
+\subsection{频率响应}
+高斯模糊在频域相当于一个高斯低通滤波器，其频率响应为：
+\[
+H(\omega_1, \omega_2) = e^{-2\pi^2\sigma^2(\omega_1^2 + \omega_2^2)}
+\]
+
+\subsection{特性与优缺点}
+
+\begin{itemize}
+    \item \textbf{优点}：
+    \begin{itemize}
+        \item 边缘保持较好（平滑过渡）
+        \item 不会产生明显的振铃效应
+        \item 具有旋转对称性（各向同性）
+        \item 核可分离，计算效率高
+        \item 在空间域和频域都有良好性质
+    \end{itemize}
+
+    \item \textbf{缺点}：
+    \begin{itemize}
+        \item 计算比均值模糊复杂
+        \item 需要选择 $\sigma$ 参数
+        \item 对脉冲噪声效果有限
+        \item 仍然会模糊边缘，只是更平滑
+    \end{itemize}
+\end{itemize}
+
+\subsection{应用场景}
+\begin{itemize}
+    \item 高质量图像去噪
+    \item 边缘检测前的预处理（如Canny边缘检测）
+    \item 尺度空间表示（如图像金字塔）
+    \item 艺术效果（景深模拟、柔光效果）
+    \item 计算机视觉中的特征提取预处理
+\end{itemize}
+
+\section{中值模糊（Median Blurring）}
+
+\subsection{数学定义}
+
+\begin{definition}[中值模糊]
+中值模糊是一种非线性滤波方法，将每个像素的值替换为其邻域内所有像素值的中值（Median）。对于以 $(x,y)$ 为中心的邻域 $\Omega$：
+\[
+I'(x,y) = \text{median}\{I(x+i, y+j) \mid (i,j) \in \Omega\}
+\]
+中值定义为将一组数值排序后位于中间位置的值。
+\end{definition}
+
+\begin{example}[3×3邻域的中值计算]
+对于像素值集合 $\{120, 125, 130, 118, 122, 128, 115, 121, 119\}$：
+\begin{enumerate}
+    \item 排序：$\{115, 118, 119, 120, 121, 122, 125, 128, 130\}$
+    \item 中值（第5个元素）：$121$
+\end{enumerate}
+\end{example}
+
+\subsection{中值的数学性质}
+
+\begin{theorem}[中值的稳健性]
+对于一组包含离群值的数据，中值比均值更具稳健性（Robustness）。设数据集 $X = \{x_1, x_2, \dots, x_n\}$，其中包含 $k$ 个离群值，当 $k < n/2$ 时，中值不受离群值影响。
+\end{theorem}
+
+\begin{proof}
+将数据排序后得到 $x_{(1)} \leq x_{(2)} \leq \cdots \leq x_{(n)}$。中值为 $x_{(\lceil n/2 \rceil)}$。改变任意 $k < n/2$ 个元素的值，只要这些元素不是中值所在位置的元素，中值就不会改变。
+\end{proof}
+
+\subsection{特性与优缺点}
+
+\begin{itemize}
+    \item \textbf{优点}：
+    \begin{itemize}
+        \item 对脉冲噪声（椒盐噪声）去除效果极佳
+        \item 边缘保持能力强
+        \item 不会产生新的像素值（输出值来自输入）
+        \item 对离群值具有稳健性
+    \end{itemize}
+
+    \item \textbf{缺点}：
+    \begin{itemize}
+        \item 计算复杂度较高（需要排序）
+        \item 对高斯噪声去噪效果不如线性滤波
+        \item 会消除细小的细节和纹理
+        \item 可能改变图像的整体亮度
+    \end{itemize}
+\end{itemize}
+
+\subsection{快速算法}
+传统中值滤波需要 $O(N^2 \log N)$ 时间复杂度。优化算法包括：
+\begin{itemize}
+    \item \textbf{直方图方法}：维护邻域直方图，$O(1)$ 时间更新
+    \item \textbf{快速选择算法}：$O(N^2)$ 平均时间复杂度
+    \item \textbf{分离中值滤波}：近似方法，先水平后垂直
+\end{itemize}
+
+\subsection{应用场景}
+\begin{itemize}
+    \item 去除椒盐噪声
+    \item 医学图像处理（去除斑点噪声）
+    \item 文档图像二值化预处理
+    \item 边缘检测前的噪声去除
+    \item 实时视频处理中的噪声抑制
+\end{itemize}
+
+\section{三种模糊技术的比较分析}
+
+\subsection{数学性质比较}
+
+\begin{table}[h]
+\centering
+\caption{三种模糊技术的数学性质比较}
+\begin{tabular}{|l|c|c|c|}
+\hline
+\textbf{特性} & \textbf{均值模糊} & \textbf{高斯模糊} & \textbf{中值模糊} \\
+\hline
+\textbf{线性性} & 线性 & 线性 & 非线性 \\
+\hline
+\textbf{核类型} & 均匀核 & 高斯核 & 无固定核 \\
+\hline
+\textbf{参数} & 核大小 & 核大小和 $\sigma$ & 核大小 \\
+\hline
+\textbf{计算复杂度} & $O(N^2)$ & $O(N^2)$ 或 $O(2N)$（可分离） & $O(N^2 \log N)$ \\
+\hline
+\textbf{边缘保持} & 差 & 中等 & 好 \\
+\hline
+\textbf{各向同性} & 是 & 是 & 是 \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{噪声处理能力比较}
+
+\begin{table}[h]
+\centering
+\caption{对不同类型的噪声处理效果}
+\begin{tabular}{|l|c|c|c|}
+\hline
+\textbf{噪声类型} & \textbf{均值模糊} & \textbf{高斯模糊} & \textbf{中值模糊} \\
+\hline
+\textbf{高斯噪声} & 好 & 很好 & 中等 \\
+\hline
+\textbf{脉冲噪声（椒盐）} & 差 & 中等 & 很好 \\
+\hline
+\textbf{均匀噪声} & 好 & 好 & 中等 \\
+\hline
+\textbf{泊松噪声} & 中等 & 好 & 差 \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{视觉效果比较}
+
+\begin{itemize}
+    \item \textbf{均值模糊}：产生均匀的模糊效果，边缘出现明显模糊和振铃
+    \item \textbf{高斯模糊}：产生自然的模糊效果，边缘过渡平滑
+    \item \textbf{中值模糊}：保留边缘的同时去除噪声，可能产生"卡通化"效果
+\end{itemize}
+
+\section{代码示例}
+
+\subsection{Python + OpenCV 实现}
+
+\begin{lstlisting}[language=Python, caption={三种模糊技术的Python实现与比较}]
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+from skimage.util import random_noise
+
+def compare_blurring_techniques():
+    # 1. 读取并准备测试图像
+    img = cv2.imread('test_image.jpg')
+    if img is None:
+        # 创建测试图像：包含边缘和纹理
+        img = np.zeros((300, 300, 3), dtype=np.uint8)
+        cv2.rectangle(img, (50, 50), (250, 250), (255, 255, 255), -1)
+        cv2.circle(img, (150, 150), 80, (128, 128, 128), -1)
+        cv2.putText(img, 'TEST', (100, 160),
+                   cv2.FONT_HERSHEY_SIMPLEX, 2, (200, 200, 200), 3)
+
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+    # 2. 添加混合噪声（高斯噪声 + 脉冲噪声）
+    # 添加高斯噪声
+    gaussian_noise = np.random.normal(0, 25, gray.shape).astype(np.uint8)
+    noisy_gaussian = cv2.add(gray, gaussian_noise)
+
+    # 添加脉冲噪声（椒盐噪声）
+    noisy_impulse = gray.copy()
+    salt_prob = 0.01  # 盐噪声概率
+    pepper_prob = 0.01  # 椒噪声概率
+
+    # 添加盐噪声（白色点）
+    salt_mask = np.random.rand(*gray.shape) < salt_prob
+    noisy_impulse[salt_mask] = 255
+
+    # 添加椒噪声（黑色点）
+    pepper_mask = np.random.rand(*gray.shape) < pepper_prob
+    noisy_impulse[pepper_mask] = 0
+
+    # 3. 应用不同的模糊技术
+    kernel_size = 5
+
+    # 均值模糊
+    mean_blur_gaussian = cv2.blur(noisy_gaussian, (kernel_size, kernel_size))
+    mean_blur_impulse = cv2.blur(noisy_impulse, (kernel_size, kernel_size))
+
+    # 高斯模糊
+    sigma = 1.0
+    gaussian_blur_gaussian = cv2.GaussianBlur(noisy_gaussian,
+                                             (kernel_size, kernel_size), sigma)
+    gaussian_blur_impulse = cv2.GaussianBlur(noisy_impulse,
+                                            (kernel_size, kernel_size), sigma)
+
+    # 中值模糊
+    median_blur_gaussian = cv2.medianBlur(noisy_gaussian, kernel_size)
+    median_blur_impulse = cv2.medianBlur(noisy_impulse, kernel_size)
+
+    # 4. 计算PSNR评估去噪效果
+    def calculate_psnr(original, processed):
+        mse = np.mean((original - processed) ** 2)
+        if mse == 0:
+            return float('inf')
+        return 20 * np.log10(255.0 / np.sqrt(mse))
+
+    print("="*60)
+    print("高斯噪声去噪效果 (PSNR, dB):")
+    print(f"  均值模糊: {calculate_psnr(gray, mean_blur_gaussian):.2f}")
+    print(f"  高斯模糊: {calculate_psnr(gray, gaussian_blur_gaussian):.2f}")
+    print(f"  中值模糊: {calculate_psnr(gray, median_blur_gaussian):.2f}")
+
+    print("\n脉冲噪声去噪效果 (PSNR, dB):")
+    print(f"  均值模糊: {calculate_psnr(gray, mean_blur_impulse):.2f}")
+    print(f"  高斯模糊: {calculate_psnr(gray, gaussian_blur_impulse):.2f}")
+    print(f"  中值模糊: {calculate_psnr(gray, median_blur_impulse):.2f}")
+    print("="*60)
+
+    # 5. 可视化结果
+    fig, axes = plt.subplots(4, 4, figsize=(16, 16))
+
+    images = [
+        [gray, noisy_gaussian, noisy_impulse, gray],
+        [mean_blur_gaussian, mean_blur_impulse, gray, gray],
+        [gaussian_blur_gaussian, gaussian_blur_impulse, gray, gray],
+        [median_blur_gaussian, median_blur_impulse, gray, gray]
+    ]
+
+    titles = [
+        ['原始图像', '高斯噪声图像', '脉冲噪声图像', ''],
+        ['均值模糊\n(高斯噪声)', '均值模糊\n(脉冲噪声)', '', ''],
+        ['高斯模糊\n(高斯噪声)', '高斯模糊\n(脉冲噪声)', '', ''],
+        ['中值模糊\n(高斯噪声)', '中值模糊\n(脉冲噪声)', '', '']
+    ]
+
+    for i in range(4):
+        for j in range(4):
+            if j < 3:  # 只显示前三列
+                axes[i, j].imshow(images[i][j], cmap='gray')
+                axes[i, j].set_title(titles[i][j], fontsize=10)
+                axes[i, j].axis('off')
+            else:
+                axes[i, j].axis('off')
+
+    # 添加比较图
+    axes[0, 3].axis('off')
+    axes[1, 3].text(0.1, 0.5, '均值模糊:\n• 计算简单\n• 边缘模糊严重\n• 适合高斯噪声',
+                   transform=axes[1, 3].transAxes, fontsize=9)
+    axes[2, 3].text(0.1, 0.5, '高斯模糊:\n• 边缘保持较好\n• 参数可调(σ)\n• 适合多种噪声',
+                   transform=axes[2, 3].transAxes, fontsize=9)
+    axes[3, 3].text(0.1, 0.5, '中值模糊:\n• 非线性滤波\n• 脉冲噪声去除好\n• 边缘保持好',
+                   transform=axes[3, 3].transAxes, fontsize=9)
+
+    plt.tight_layout()
+    plt.show()
+
+    # 6. 边缘保持能力可视化
+    # 使用Sobel算子检测边缘
+    def edge_detection(image):
+        sobel_x = cv2.Sobel(image, cv2.CV_64F, 1, 0, ksize=3)
+        sobel_y = cv2.Sobel(image, cv2.CV_64F, 0, 1, ksize=3)
+        magnitude = np.sqrt(sobel_x**2 + sobel_y**2)
+        return cv2.normalize(magnitude, None, 0, 255, cv2.NORM_MINMAX).astype(np.uint8)
+
+    # 计算边缘图像
+    edges_original = edge_detection(gray)
+    edges_mean = edge_detection(mean_blur_gaussian)
+    edges_gaussian = edge_detection(gaussian_blur_gaussian)
+    edges_median = edge_detection(median_blur_gaussian)
+
+    # 显示边缘保持效果
+    fig, axes = plt.subplots(2, 2, figsize=(10, 8))
+    edge_images = [edges_original, edges_mean, edges_gaussian, edges_median]
+    edge_titles = ['原始图像边缘', '均值模糊边缘', '高斯模糊边缘', '中值模糊边缘']
+
+    for i, (ax, img, title) in enumerate(zip(axes.flat, edge_images, edge_titles)):
+        ax.imshow(img, cmap='gray')
+        ax.set_title(title)
+        ax.axis('off')
+
+    plt.tight_layout()
+    plt.show()
+
+if __name__ == "__main__":
+    compare_blurring_techniques()
+\end{lstlisting}
+
+\subsection{C++ + OpenCV 实现}
+
+\begin{lstlisting}[language=C++, caption={三种模糊技术的C++实现}]
+#include <opencv2/opencv.hpp>
+#include <iostream>
+#include <vector>
+#include <string>
+#include <cmath>
+
+using namespace cv;
+using namespace std;
+
+// 计算PSNR
+double calculatePSNR(const Mat& original, const Mat& processed) {
+    Mat diff;
+    absdiff(original, processed, diff);
+    diff.convertTo(diff, CV_32F);
+    diff = diff.mul(diff);
+
+    Scalar s = sum(diff);
+    double mse = s[0] / (original.rows * original.cols);
+
+    if (mse == 0) return INFINITY;
+    return 10.0 * log10((255.0 * 255.0) / mse);
+}
+
+// 添加高斯噪声
+void addGaussianNoise(const Mat& src, Mat& dst, double sigma = 25.0) {
+    src.copyTo(dst);
+    Mat noise = Mat(src.size(), src.type());
+    randn(noise, 0, sigma);
+    dst += noise;
+}
+
+// 添加脉冲噪声（椒盐噪声）
+void addImpulseNoise(const Mat& src, Mat& dst,
+                     double salt_prob = 0.01, double pepper_prob = 0.01) {
+    src.copyTo(dst);
+
+    // 添加盐噪声（白色点）
+    for (int i = 0; i < src.rows; i++) {
+        for (int j = 0; j < src.cols; j++) {
+            double r = (double)rand() / RAND_MAX;
+            if (r < salt_prob) {
+                dst.at<uchar>(i, j) = 255;
+            }
+        }
+    }
+
+    // 添加椒噪声（黑色点）
+    for (int i = 0; i < src.rows; i++) {
+        for (int j = 0; j < src.cols; j++) {
+            double r = (double)rand() / RAND_MAX;
+            if (r < pepper_prob) {
+                dst.at<uchar>(i, j) = 0;
+            }
+        }
+    }
+}
+
+int main() {
+    // 1. 创建测试图像
+    Mat test_image(300, 300, CV_8UC1, Scalar(0));
+    rectangle(test_image, Point(50, 50), Point(250, 250), Scalar(255), -1);
+    circle(test_image, Point(150, 150), 80, Scalar(128), -1);
+    putText(test_image, "TEST", Point(100, 160),
+            FONT_HERSHEY_SIMPLEX, 2, Scalar(200), 3);
+
+    Mat original = test_image.clone();
+
+    // 2. 添加噪声
+    Mat noisy_gaussian, noisy_impulse;
+    addGaussianNoise(original, noisy_gaussian, 25.0);
+    addImpulseNoise(original, noisy_impulse, 0.01, 0.01);
+
+    // 3. 应用不同的模糊技术
+    int kernel_size = 5;
+    double sigma = 1.0;
+
+    // 均值模糊
+    Mat mean_blur_gaussian, mean_blur_impulse;
+    blur(noisy_gaussian, mean_blur_gaussian, Size(kernel_size, kernel_size));
+    blur(noisy_impulse, mean_blur_impulse, Size(kernel_size, kernel_size));
+
+    // 高斯模糊
+    Mat gaussian_blur_gaussian, gaussian_blur_impulse;
+    GaussianBlur(noisy_gaussian, gaussian_blur_gaussian,
+                Size(kernel_size, kernel_size), sigma);
+    GaussianBlur(noisy_impulse, gaussian_blur_impulse,
+                Size(kernel_size, kernel_size), sigma);
+
+    // 中值模糊
+    Mat median_blur_gaussian, median_blur_impulse;
+    medianBlur(noisy_gaussian, median_blur_gaussian, kernel_size);
+    medianBlur(noisy_impulse, median_blur_impulse, kernel_size);
+
+    // 4. 计算并显示PSNR
+    cout << "=" << string(60, '=') << endl;
+    cout << "高斯噪声去噪效果 (PSNR, dB):" << endl;
+    cout << "  均值模糊: " << calculatePSNR(original, mean_blur_gaussian) << endl;
+    cout << "  高斯模糊: " << calculatePSNR(original, gaussian_blur_gaussian) << endl;
+    cout << "  中值模糊: " << calculatePSNR(original, median_blur_gaussian) << endl;
+
+    cout << "\n脉冲噪声去噪效果 (PSNR, dB):" << endl;
+    cout << "  均值模糊: " << calculatePSNR(original, mean_blur_impulse) << endl;
+    cout << "  高斯模糊: " << calculatePSNR(original, gaussian_blur_impulse) << endl;
+    cout << "  中值模糊: " << calculatePSNR(original, median_blur_impulse) << endl;
+    cout << "=" << string(60, '=') << endl;
+
+    // 5. 显示结果
+    vector<pair<string, Mat>> display_images = {
+        {"原始图像", original},
+        {"高斯噪声", noisy_gaussian},
+        {"脉冲噪声", noisy_impulse},
+        {"均值模糊(高斯)", mean_blur_gaussian},
+        {"均值模糊(脉冲)", mean_blur_impulse},
+        {"高斯模糊(高斯)", gaussian_blur_gaussian},
+        {"高斯模糊(脉冲)", gaussian_blur_impulse},
+        {"中值模糊(高斯)", median_blur_gaussian},
+        {"中值模糊(脉冲)", median_blur_impulse}
+    };
+
+    // 创建显示窗口
+    for (size_t i = 0; i < display_images.size(); i++) {
+        string window_name = display_images[i].first;
+        namedWindow(window_name, WINDOW_NORMAL);
+        resizeWindow(window_name, 300, 300);
+        imshow(window_name, display_images[i].second);
+
+        // 保存图像
+        string filename = "result_" + to_string(i) + "_" +
+                         display_images[i].first + ".png";
+        imwrite(filename, display_images[i].second);
+    }
+
+    waitKey(0);
+    destroyAllWindows();
+
+    return 0;
+}
+\end{lstlisting}
+
+\section{选择指南与实践建议}
+
+\subsection{如何选择合适的模糊技术}
+
+\begin{table}[h]
+\centering
+\caption{根据应用场景选择模糊技术}
+\begin{tabular}{|p{0.25\textwidth}|p{0.2\textwidth}|p{0.45\textwidth}|}
+\hline
+\textbf{应用场景} & \textbf{推荐技术} & \textbf{理由} \\
+\hline
+实时视频处理 & 均值模糊 & 计算简单，速度快 \\
+\hline
+高质量图像去噪 & 高斯模糊 & 边缘保持好，视觉效果自然 \\
+\hline
+椒盐噪声去除 & 中值模糊 & 对脉冲噪声去除效果最佳 \\
+\hline
+边缘检测预处理 & 高斯模糊 & 平滑噪声同时较好保持边缘 \\
+\hline
+艺术效果制作 & 高斯模糊 & 可控制模糊程度，效果自然 \\
+\hline医学图像处理 & 中值模糊 & 有效去除斑点噪声，保留细节 \\
+\hline
+图像缩放预处理 & 高斯模糊 & 防止混叠，保持图像质量 \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{参数选择建议}
+
+\subsubsection{均值模糊}
+\begin{itemize}
+    \item \textbf{核大小}：通常选择奇数（3, 5, 7, 9等）
+    \item \textbf{经验法则}：噪声越大，核大小应越大，但要注意避免过度模糊
+\end{itemize}
+
+\subsubsection{高斯模糊}
+\begin{itemize}
+    \item \textbf{核大小}：通常为 $6\sigma + 1$（取奇数）
+    \item \textbf{$\sigma$选择}：$\sigma$ 越大，模糊程度越高
+    \item \textbf{经验公式}：$\sigma = 0.3 \times (\text{核大小}/2 - 1) + 0.8$
+\end{itemize}
+
+\subsubsection{中值模糊}
+\begin{itemize}
+    \item \textbf{核大小}：通常选择奇数，对于椒盐噪声，3×3或5×5通常足够
+    \item \textbf{注意}：核大小过大会消除细节，过小可能无法去除噪声
+\end{itemize}
+
+\subsection{混合使用策略}
+在实际应用中，可以组合使用多种模糊技术：
+\begin{itemize}
+    \item \textbf{先中值后高斯}：先用中值模糊去除脉冲噪声，再用高斯模糊平滑图像
+    \item \textbf{自适应滤波}：根据局部图像特性选择不同的滤波方法
+    \item \textbf{多尺度处理}：在不同尺度上应用不同的模糊技术
+\end{itemize}
+
+\section{高级话题与扩展}
+
+\subsection{双边滤波（Bilateral Filtering）}
+双边滤波结合了空间域和值域（强度域）的信息，在平滑图像的同时更好地保持边缘：
+\[
+I'(x,y) = \frac{1}{W_p} \sum_{i,j \in \Omega} I(i,j) \cdot w_s(\|(i,j)-(x,y)\|) \cdot w_r(|I(i,j)-I(x,y)|)
+\]
+其中 $w_s$ 是空间权重（高斯函数），$w_r$ 是值域权重（高斯函数）。
+
+\subsection{非局部均值滤波（Non-Local Means）}
+基于图像中相似像素块的加权平均，能更好地保持纹理：
+\[
+I'(x) = \frac{1}{C(x)} \sum_{y \in \Omega} w(x,y) \cdot I(y)
+\]
+权重 $w(x,y)$ 基于像素块之间的相似度。
+
+\subsection{引导滤波（Guided Filtering）}
+使用引导图像来指导滤波过程，在边缘保持和细节平滑之间取得更好平衡。
+
+\section{总结与展望}
+
+本文系统介绍了三种基本的图像模糊技术：均值模糊、高斯模糊和中值模糊。每种技术都有其独特的数学原理、特性和适用场景。
+
+\begin{itemize}
+    \item \textbf{均值模糊}：最简单，计算快，适合实时应用和对高斯噪声的去噪
+    \item \textbf{高斯模糊}：最常用，边缘保持较好，适合高质量图像处理
+    \item \textbf{中值模糊}：非线性，对脉冲噪声去除效果好，边缘保持能力强
+\end{itemize}
+
+在实际应用中，应根据具体需求（噪声类型、计算资源、边缘保持要求等）选择合适的模糊技术。随着深度学习的发展，基于神经网络的去噪方法在许多任务上超越了传统滤波方法，但传统模糊技术因其简单性、可解释性和计算效率，在许多场景中仍然具有重要价值。
+
+\begin{remark}
+\begin{itemize}
+    \item 没有一种模糊技术适用于所有场景，选择时需要权衡各种因素
+    \item 参数选择对效果有显著影响，需要通过实验确定最佳参数
+    \item 在实际应用中，经常需要组合使用多种滤波技术
+    \item 对于特定的应用领域（如医学图像、卫星图像等），可能需要专门的滤波方法
+\end{itemize}
+\end{remark}
+
+\begin{thebibliography}{99}
+\bibitem{opencv} OpenCV Documentation. \textit{Image Filtering}. https://docs.opencv.org/
+\bibitem{gonzalez} Gonzalez, R. C., \& Woods, R. E. (2018). \textit{Digital Image Processing} (4th ed.). Pearson.
+\bibitem{sonka} Sonka, M., Hlavac, V., \& Boyle, R. (2014). \textit{Image Processing, Analysis, and Machine Vision} (4th ed.). Cengage Learning.
+\bibitem{tomasi} Tomasi, C., \& Manduchi, R. (1998). \textit{Bilateral filtering for gray and color images}. ICCV.
+\bibitem{buades} Buades, A., Coll, B., \& Morel, J. M. (2005). \textit{A non-local algorithm for image denoising}. CVPR.
+\end{thebibliography}
+
+\end{document}
+\end{lstlisting}

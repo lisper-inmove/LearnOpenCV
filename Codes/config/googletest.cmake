@@ -5,9 +5,11 @@ enable_testing()
 set(TEST_NAME "LearnOpenCV_Test")
 
 file(GLOB_RECURSE SRC_LIST CONFIGURE_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cc)
+file(GLOB_RECURSE TEST_SRC_LIST CONFIGURE_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/tests/*.cc)
+
 
 # 将源代码添加到此项目的可执行文件。
-add_executable (${TEST_NAME} tests/main.cpp ${SRC_LIST})
+add_executable (${TEST_NAME} tests/main.cpp ${SRC_LIST} ${TEST_SRC_LIST})
 
 # --------------------- googletest -----------------------------
 file(GLOB GTEST_LIBS "${GTEST_SOURCE_DIR}/build/lib/*.lib")
