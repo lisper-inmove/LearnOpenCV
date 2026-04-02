@@ -49,5 +49,6 @@
     "gtest-adapter.debugConfig": [
         "Debug (Debug Build)"
     ],
-    "gtest-adapter.supportLocation": false
+    "gtest-adapter.supportLocation": false,
+    "testMate.cpp.test.executables": "${workspaceFolder}/build/**/*_Test"
 }
