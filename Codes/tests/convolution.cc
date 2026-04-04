@@ -11,8 +11,8 @@
 #include <opencv2/imgproc.hpp>
 
 namespace cvtest::tester {
-// 直方图测试
-TEST_F(Tester, ConvolutionTest) {
+TEST_F(Tester, BlurTest) {
+
   cv::Mat image = cv::imread(filepath_, cv::IMREAD_COLOR);
 
   {
@@ -39,7 +39,11 @@ TEST_F(Tester, ConvolutionTest) {
     cv::waitKey(0);
     cv::destroyAllWindows();
   }
+}
 
+TEST_F(Tester, GaussianBlurTest) {
+
+  cv::Mat image = cv::imread(filepath_, cv::IMREAD_COLOR);
   {
     /**
      * 高斯模糊
@@ -63,5 +67,89 @@ TEST_F(Tester, ConvolutionTest) {
     cv::waitKey(0);
     cv::destroyAllWindows();
   }
+}
+
+TEST_F(Tester, MedianBlurTest) {
+
+  cv::Mat image = cv::imread(filepath_, cv::IMREAD_COLOR);
+  {
+    /**
+     * 中值模糊
+     *  void cv::medianBlur(
+     *    InputArray src,
+     *    OutputArray dst,
+     *    int ksize // 必须是大于1的奇数
+     *  )
+     * */
+    cv::Mat result;
+    cv::medianBlur(image, result, 21);
+    cv::imshow("Median Blur", result);
+    cv::waitKey();
+    cv::destroyAllWindows();
+  }
+}
+
+TEST_F(Tester, Filter2DTest) {
+
+  cv::Mat image = cv::imread(filepath_, cv::IMREAD_COLOR);
+  {
+    /**
+     * 自定义滤波
+     * void cv::filter2D(
+     *  InputArray src,
+     *  OutputArray dst,
+     *  int ddepth,
+     *  InputArray kernel,
+     *  Point anchor = Point(-1, -1),
+     *  double delta = 0,
+     *  int borderType = BORDER_DEFAULT
+     * )
+     * */
+    cv::Mat result;
+    cv::Mat kernel = cv::Mat::ones(cv::Size(25, 25), CV_32FC1);
+    kernel = kernel / (25 * 25);
+    cv::filter2D(image, result, -1, kernel);
+    cv::imshow("Filter2D", result);
+    cv::waitKey();
+    cv::destroyAllWindows();
+  }
+}
+
+TEST_F(Tester, HorizontalBlurTest) { /* 水平垂直模糊*/
+
+  cv::Mat image = cv::imread(filepath_, cv::IMREAD_COLOR);
+  // 垂直模糊
+  cv::Mat k = cv::Mat::ones(cv::Size(1, 25), CV_32FC1);
+  k = k / (25 * 1);
+  cv::Mat result;
+  cv::filter2D(image, result, -1, k);
+  cv::imshow("Horizotnal Blur", result);
+  cv::waitKey();
+  cv::destroyAllWindows();
+}
+
+TEST_F(Tester, VerticalBlurTest) { /* 水平垂直模糊*/
+
+  cv::Mat image = cv::imread(filepath_, cv::IMREAD_COLOR);
+  // 水平模糊
+  cv::Mat k = cv::Mat::ones(cv::Size(25, 1), CV_32FC1);
+  k = k / (25 * 1);
+  cv::Mat result;
+  cv::filter2D(image, result, -1, k);
+  cv::imshow("Vertical Blur", result);
+  cv::waitKey();
+  cv::destroyAllWindows();
+}
+
+TEST_F(Tester, DiognalTest) { /* 对角线模糊*/
+
+  cv::Mat image = cv::imread(filepath_, cv::IMREAD_COLOR);
+  cv::Mat k = cv::Mat::eye(cv::Size(25, 25), CV_32FC1);
+  k = k / (25);
+  cv::Mat result;
+  cv::filter2D(image, result, -1, k, cv::Point(-1, -1), 0, 4);
+  cv::imshow("Diognal Blur", result);
+  cv::waitKey();
+  cv::destroyAllWindows();
 }
 } // namespace cvtest::tester
