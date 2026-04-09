@@ -46,6 +46,7 @@ TEST_F(Tester, ReadWriteTest) {
    * */
   cv::Mat image = cv::imread(filepath_, cv::IMREAD_COLOR);
   cv::namedWindow("OpenCV Window", cv::WINDOW_AUTOSIZE);
+  // imread默认类型是 CV_8UC3，显示时用imshow函数即可
   cv::imshow("OpenCV Window", image);
   cv::waitKey(0);
   cv::destroyAllWindows();
