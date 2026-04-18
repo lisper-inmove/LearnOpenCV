@@ -11,10 +11,10 @@
                 "CMAKE_BUILD_TYPE": "Debug",
                 "CMAKE_CXX_STANDARD": "17",
                 "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
-                "OpenCV_DIR": "/home/inmove/.opt/opencv/lib/cmake/opencv4"
+                "OpenCV_DIR": "/home/inmove/.opt/opencv-qt/lib/cmake/opencv4"
             },
             "environment": {
-                "LD_LIBRARY_PATH": "/home/inmove/.opt/opencv/lib"
+                "LD_LIBRARY_PATH": "/home/inmove/.opt/opencv-qt/lib"
             }
         },
         {
@@ -27,10 +27,10 @@
                 "CMAKE_BUILD_TYPE": "Release",
                 "CMAKE_CXX_STANDARD": "17",
                 "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
-                "OpenCV_DIR": "/home/inmove/.opt/opencv/lib/cmake/opencv4"
+                "OpenCV_DIR": "/home/inmove/.opt/opencv-qt/lib/cmake/opencv4"
             },
             "environment": {
-                "LD_LIBRARY_PATH": "/home/inmove/.opt/opencv/lib"
+                "LD_LIBRARY_PATH": "/home/inmove/.opt/opencv-qt/lib"
             }
         }
     ],

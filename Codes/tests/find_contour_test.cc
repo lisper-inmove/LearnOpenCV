@@ -256,4 +256,49 @@ TEST_F(Tester, ContourApproxTest) {
   cv::waitKey();
   cv::destroyAllWindows();
 }
+
+TEST_F(Tester, ContourAnalysisTest) {
+  /**
+   * 轮廓分析
+   * 1. 横纵比: 宽度与高度的比值
+   *   boundingRect的作用是计算轮廓的最大外接矩形
+   *   minAreaRect 计算轮廓最小外接矩形
+   *     RotatedRect cv::minAreaRect(InputArray points);
+   *
+   * 2. 延展度: 轮廓面积与最大外接矩形的比值
+   * 3. 实密度: 轮廓面积与最大外接矩形的比值
+   * 4. 对象像素均值:
+   * 进行轮廓绘制时，将thickness的值设置为-1就能完成轮廓填充，并生成轮廓对象所对应的掩膜
+   *    然后用mean函数实现对掩膜区域的均值求解，最终得到每个对象的轮廓所占区域的像素均值
+   *
+   * */
+  cv::Mat gray;
+  cv::Mat image = cv::imread(contoursPath_, cv::IMREAD_COLOR);
+  cv::cvtColor(image, gray, cv::COLOR_BGR2GRAY);
+
+  cv::Mat edges;
+  int t = 80;
+  cv::Canny(image, edges, t, t * 2, 3, false);
+  cv::Mat k = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(3, 3),
+                                        cv::Point(-1, -1));
+  cv::dilate(edges, edges, k);
+
+  std::vector<std::vector<cv::Point>> contours;
+  std::vector<cv::Vec4i> hierarchy;
+  cv::findContours(edges, contours, hierarchy, cv::RETR_EXTERNAL,
+                   cv::CHAIN_APPROX_SIMPLE);
+
+  for (auto &contour : contours) {
+    std::vector<cv::Point> pts;
+    cv::approxPolyDP(contour, pts, 10, true);
+    for (auto &point : pts) {
+      cv::circle(image, point, 3, cv::Scalar(0, 0, 255), 2, 8, 0);
+    }
+  }
+
+  cv::imshow("Source", image);
+  cv::waitKey();
+  cv::destroyAllWindows();
+}
+
 } // namespace cvtest::tester

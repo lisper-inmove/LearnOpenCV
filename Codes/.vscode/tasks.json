@@ -46,7 +46,7 @@
             "command": "cmake",
             "args": [
                 "-DCMAKE_BUILD_TYPE=Debug",
-                "-DOpenCV_DIR=/home/inmove/.opt/opencv/lib/cmake/opencv4",
+                "-DOpenCV_DIR=/home/inmove/.opt/opencv-qt/lib/cmake/opencv4",
                 "-DCMAKE_CXX_STANDARD=17",
                 "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
                 "-S",
@@ -63,7 +63,7 @@
             "command": "cmake",
             "args": [
                 "-DCMAKE_BUILD_TYPE=Release",
-                "-DOpenCV_DIR=/home/inmove/.opt/opencv/lib/cmake/opencv4",
+                "-DOpenCV_DIR=/home/inmove/.opt/opencv-qt/lib/cmake/opencv4",
                 "-DCMAKE_CXX_STANDARD=17",
                 "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
                 "-S",

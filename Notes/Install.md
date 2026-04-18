@@ -32,7 +32,7 @@
     https://developer.nvidia.com/cuda-downloads?target_os=Linux&target_arch=x86_64&Distribution=Ubuntu&target_version=24.04&target_type=deb_local
 
 # 编译安装
- 
+
     1. Ubuntu 24.4
     2. CUDA Driver 13.0
     3. Toolkit: https://developer.nvidia.com/cuda-13-0-0-download-archive?target_os=Linux&target_arch=x86_64&Distribution=Ubuntu&target_version=24.04&target_type=deb_local
@@ -76,5 +76,37 @@
           -D OPENCV_GENERATE_PKGCONFIG=ON \
           -D WITH_TBB=ON \
           -D BUILD_EXAMPLES=ON \
+          -D OPENCV_EXTRA_MODULES_PATH=/home/inmove/nvme1/SourceCodes/opencv_contrib/modules \
+          ..
+
+# 支持Qt
+
+    cmake -D CMAKE_BUILD_TYPE=RELEASE \
+        -D CMAKE_INSTALL_PREFIX=/home/inmove/.opt/opencv-qt \
+        -D OPENCV_GENERATE_PKGCONFIG=ON \
+        -D WITH_TBB=ON \
+        -D BUILD_EXAMPLES=ON \
+        -D CMAKE_PREFIX_PATH="$HOME/nvme1/.Qt/6.11.0/gcc_64" \
+        -D WITH_QT=ON \
+        -D WITH_GTK=ON \
+        -D BUILD_TESTS=OFF \
+        -D BUILD_PERF_TESTS=OFF \
+        -D OPENCV_GENERATE_PKGCONFIG=ON \
+        -D OPENCV_EXTRA_MODULES_PATH=/home/inmove/nvme1/SourceCodes/opencv_contrib/modules \
+        ..
+
+# 系统级Qt6开发包
+
+    sudo apt install qt6-base-dev qt6-base-private-dev qt6-core5compat-dev qt6-declarative-dev
+
+    cmake -D CMAKE_BUILD_TYPE=RELEASE \
+          -D CMAKE_INSTALL_PREFIX=/home/inmove/.opt/opencv-qt \
+          -D WITH_TBB=ON \
+          -D WITH_QT=ON \
+          -D WITH_GTK=ON \
+          -D BUILD_TESTS=OFF \
+          -D BUILD_PERF_TESTS=OFF \
+          -D OPENCV_GENERATE_PKGCONFIG=ON \
+          -D BUILD_opencv_cvv=OFF \
           -D OPENCV_EXTRA_MODULES_PATH=/home/inmove/nvme1/SourceCodes/opencv_contrib/modules \
           ..

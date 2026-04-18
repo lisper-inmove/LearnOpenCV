@@ -5,7 +5,7 @@
             "includePath": [
                 "${workspaceFolder}/**",
                 "${workspaceFolder}/include",
-                "/home/inmove/.opt/opencv/include/opencv4",
+                "/home/inmove/.opt/opencv-qt/include/opencv4",
                 "/home/inmove/nvme1/SourceCodes/googletest/googletest/include"
             ],
             "defines": [
@@ -22,7 +22,7 @@
             "includePath": [
                 "${workspaceFolder}/**",
                 "${workspaceFolder}/include",
-                "/home/inmove/.opt/opencv/include/opencv4",
+                "/home/inmove/.opt/opencv-qt/include/opencv4",
                 "/home/inmove/nvme1/SourceCodes/googletest/googletest/include"
             ],
             "defines": [

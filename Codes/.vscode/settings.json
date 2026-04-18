@@ -1,10 +1,18 @@
 {
     // CMake Tools配置
     "cmake.configureSettings": {
-        "OpenCV_DIR": "/home/inmove/.opt/opencv/lib/cmake/opencv4",
+        "OpenCV_DIR": "/home/inmove/.opt/opencv-qt/lib/cmake/opencv4",
         "CMAKE_CXX_STANDARD": "17",
         "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
     },
+    "cmake.debugConfig": {
+        "args": [
+            "-V"
+        ]
+    },
+    "ctest.runArgs": [
+        "-V"
+    ],
     // 根据构建类型使用不同的构建目录
     "cmake.buildDirectory": "${workspaceFolder}/build/${buildType}",
     "cmake.generator": "Unix Makefiles",
