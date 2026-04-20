@@ -14,6 +14,7 @@ public:
                        int histSize);
   void drawColorHistogram3Channel(const cv::Mat &src);
   void drawDetailedHistogram(const cv::Mat &gray);
+  int calculateLaplacianSum(const cv::Mat &src);
 
 protected:
   std::string assets_ = "/home/inmove/nvme1/Learn/LearnOpenCV/Codes/assets/";

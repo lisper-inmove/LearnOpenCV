@@ -56,42 +56,4 @@ TEST_F(Tester, GaussianNoiseImageTest) {
   cv::imwrite(gsNoisePath_, dst);
 }
 
-TEST_F(Tester, RemoveJYNoise) {
-  // 椒盐去噪
-  cv::Mat image = cv::imread(jyNoisePath_, cv::IMREAD_COLOR);
-  cv::Mat median_denoise, mean_denoise;
-  // 中值模糊去噪
-  medianBlur(image, median_denoise, 5);
-  // 均值模糊去噪
-  blur(image, mean_denoise, cv::Size(5, 5));
-  cv::imshow("Source", image);
-  cv::imshow("median denoise", median_denoise);
-  cv::imshow("mean denoise", mean_denoise);
-  cv::waitKey(0);
-  cv::destroyAllWindows();
-}
-
-TEST_F(Tester, GaussianBilateralFilter) {
-  /**
-   * 高斯双边滤波
-   * void cv::bilateralfilter(
-   *  InputArray src,
-   *  OutputArray dst,
-   *  int d, // 滤波过程中像素领域直径
-   *  double sigmaColor, // 颜色差异
-   *  double sigmaSpace, // d为0时有效,表示中心位置差异,越远权重越低
-   *  int borderType = BORDER_DEFAULT
-   * )
-   * */
-  cv::Mat image = cv::imread(gsNoisePath_, cv::IMREAD_COLOR);
-  cv::Mat denoise, cartoon;
-  cv::bilateralFilter(image, denoise, 7, 80, 10);
-  cv::bilateralFilter(image, cartoon, 0, 150, 10);
-  cv::imshow("Source", image);
-  cv::imshow("denoise", denoise);
-  cv::imshow("cartoon", cartoon);
-  cv::waitKey(0);
-  cv::destroyAllWindows();
-}
-
 } // namespace cvtest::tester

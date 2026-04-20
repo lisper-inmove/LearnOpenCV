@@ -2,6 +2,7 @@
 #include "tester.h"
 #include "gtest/gtest.h"
 #include <array>
+#include <cstdlib>
 #include <iostream>
 #include <opencv2/core.hpp>
 #include <opencv2/core/base.hpp>
@@ -11,6 +12,7 @@
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc.hpp>
+#include <opencv2/opencv.hpp>
 #include <string>
 #include <sys/wait.h>
 
@@ -389,6 +391,105 @@ TEST_F(Tester, MarginDetectTest) {
   cv::imshow("Source Image", image);
   cv::imshow("Gray", gray);
   cv::imshow("Edges", edges);
+  cv::waitKey(30000);
+  cv::destroyAllWindows();
+}
+
+TEST_F(Tester, RemoveJYNoise) {
+  /**
+   * 去除椒盐噪声
+   */
+  cv::Mat image = cv::imread(jyNoisePath_, cv::IMREAD_COLOR);
+  cv::Mat median_denoise, mean_denoise;
+  // 中值模糊去噪
+  medianBlur(image, median_denoise, 5);
+  // 均值模糊去噪
+  blur(image, mean_denoise, cv::Size(5, 5));
+  cv::imshow("Source", image);
+  cv::imshow("median denoise", median_denoise);
+  cv::imshow("mean denoise", mean_denoise);
+  cv::waitKey(15000);
+  cv::destroyAllWindows();
+}
+
+TEST_F(Tester, GaussianBilateralFilter) {
+  /**
+   * 边缘保留滤波（高斯双边滤波函数）: 基于两个高斯核生成权重，完成图像滤波
+   *      其中一个为空间权重，另一个是值域权重
+   *      空间权重只考虑了 x, y 两个维度
+   *      值域权重则考虑了 r, g, b 的影响
+   * void cv::bilateralfilter(
+   *  InputArray src,
+   *  OutputArray dst,
+   *  int d, // 滤波过程中像素邻域直径
+   *  // 如果邻居像素的颜色值与中心像素的颜色值相差 < sigmaColor
+   *       这个邻居被认为是相似的，它会获得较高的权重，对最终结果有较大影响。
+   *  double sigmaColor, // 颜色差异
+   *  //
+   * 坐标空间上的标准差。值越大，表示距离更远的像素也会参与计算，模糊范围越大。
+   *  double sigmaSpace, // d为0时有效,表示中心位置差异,越远权重越低
+   *  int borderType = BORDER_DEFAULT
+   * )
+   * */
+  cv::Mat image = cv::imread(gsNoisePath_, cv::IMREAD_COLOR);
+  cv::Mat denoise, cartoon;
+  cv::bilateralFilter(image, denoise, 7, 80, 10);
+  cv::bilateralFilter(image, cartoon, 0, 150, 30);
+  cv::imshow("Source", image);
+  cv::imshow("denoise", denoise);
+  cv::imshow("cartoon", cartoon);
+  cv::waitKey(15000);
+  cv::destroyAllWindows();
+}
+
+TEST_F(Tester, LaplacianTest) {
+  /**
+   * 拉普拉斯算子，可以同时得到两个方向的梯度信息
+   *       0 -1  0       -1 -1 -1
+   *      -1  4 -1       -1  8 -1
+   *       0 -1  0       -1 -1 -1
+   * 左侧为拉普拉斯算子，右侧为8邻域拉普拉斯算子
+   * 它的数学表达式为: L(x, y) = ∂^2f/∂x^2 + ∂^2f/∂y^2
+   * 也就是同时求取两个方向的二阶导
+   * X轴方向: ∂^2f/∂x^2 = 2f(x, y) - f(x+1, y) - f(x-1, y)
+   * Y轴方向: ∂^2f/∂y^2 = 2f(x, y) - f(x, y-1) - f(x, y+1)
+   * 两个式子合起来就是左侧的算子.
+   *
+   * 拉普拉斯锐化： 0 0 0        0  -1   0      0  -1   0
+   *                0 1 0   +   -1   4  -1 =   -1   5  -1
+   *                0 0 0        0  -1   0      0  -1   0
+   * 等号左边是原图 + 拉普拉斯算子 。右侧就是用于锐化的拉普拉斯算子
+   * void cv::Laplacian(
+   *   InputArray src,
+   *   OutputArray dst,
+   *   int ddepth,
+   *   int ksize = 1,
+   *   double scale = 1.0,
+   *   double delta = 0,
+   *   int borderType = BORDER_DEFAULT
+   * )
+   */
+  cv::Mat image = cv::imread(filepath_);
+  cv::Mat lapImg, sharpenImg, gray;
+  cv::cvtColor(image, gray, cv::COLOR_BGR2GRAY);
+  cv::Laplacian(gray, lapImg, CV_32F, 3, 1.0, 0.0, 4);
+  cv::normalize(lapImg, lapImg, 0, 1.0, cv::NORM_MINMAX);
+
+  cv::Mat k = (cv::Mat_<float>(3, 3) << 0, -1, 0, -1, 5, -1, 0, -1, 0);
+  cv::filter2D(image, sharpenImg, -1, k, cv::Point(-1, -1), 0, 4);
+
+  cv::Mat sharpenGray;
+  cv::cvtColor(sharpenImg, sharpenGray, cv::COLOR_BGR2GRAY);
+
+  int sum = calculateLaplacianSum(sharpenImg);
+  std::cout << "Sharpen Laplacian improve sum " << sum << "\n";
+  sum = calculateLaplacianSum(gray);
+  std::cout << "Source Laplacian improve sum " << sum << "\n";
+
+  cv::imshow("Source Image", image);
+  cv::imshow("Laplacian Image", lapImg);
+  cv::imshow("Sharpen Image", sharpenImg);
+
   cv::waitKey(30000);
   cv::destroyAllWindows();
 }

@@ -163,7 +163,7 @@ CH5_convolution: build-debug-check
 	@echo "========================================"
 	@echo "Running all tests in CH5_convolution.cc"
 	@echo "========================================"
-	@$(TEST_EXEC_DEBUG) --gtest_filter="*BlurTest*:*GaussianBlurTest*:*MedianBlurTest*:*Filter2DTest*:*VerticalBlurTest*:*HorizontalBlurTest*:*DiagonalBlurTest*:*GradientTest*:*PrewittTest*:*SobelTest*:*SobelBookTest*:*ScharrTest*:*MarginDetectTest*"
+	@$(TEST_EXEC_DEBUG) --gtest_filter="*BlurTest*:*GaussianBlurTest*:*MedianBlurTest*:*Filter2DTest*:*VerticalBlurTest*:*HorizontalBlurTest*:*DiagonalBlurTest*:*GradientTest*:*PrewittTest*:*SobelTest*:*SobelBookTest*:*ScharrTest*:*MarginDetectTest*:*RemoveJYNoise*:*GaussianBilateralFilter*:*LaplacianTest*"
 
 .PHONY: CH5_convolution.BlurTest
 CH5_convolution.BlurTest: build-debug-check
@@ -229,6 +229,21 @@ CH5_convolution.ScharrTest: build-debug-check
 CH5_convolution.MarginDetectTest: build-debug-check
 	@echo "Running MarginDetectTest..."
 	@$(TEST_EXEC_DEBUG) --gtest_filter="*MarginDetectTest*"
+
+.PHONY: CH5_convolution.RemoveJYNoise
+CH5_convolution.RemoveJYNoise: build-debug-check
+	@echo "Running RemoveJYNoise..."
+	@$(TEST_EXEC_DEBUG) --gtest_filter="*RemoveJYNoise*"
+
+.PHONY: CH5_convolution.GaussianBilateralFilter
+CH5_convolution.GaussianBilateralFilter: build-debug-check
+	@echo "Running GaussianBilateralFilter..."
+	@$(TEST_EXEC_DEBUG) --gtest_filter="*GaussianBilateralFilter*"
+
+.PHONY: CH5_convolution.LaplacianTest
+CH5_convolution.LaplacianTest: build-debug-check
+	@echo "Running LaplacianTest..."
+	@$(TEST_EXEC_DEBUG) --gtest_filter="*LaplacianTest*"
 
 
 # ============================================
@@ -341,7 +356,7 @@ noise_image_test: build-debug-check
 	@echo "========================================"
 	@echo "Running all tests in noise_image_test.cc"
 	@echo "========================================"
-	@$(TEST_EXEC_DEBUG) --gtest_filter="*NoiseImageTest*:*GaussianNoiseImageTest*:*RemoveJYNoise*:*GaussianBilateralFilter*"
+	@$(TEST_EXEC_DEBUG) --gtest_filter="*NoiseImageTest*:*GaussianNoiseImageTest*"
 
 .PHONY: noise_image_test.NoiseImageTest
 noise_image_test.NoiseImageTest: build-debug-check
@@ -352,16 +367,6 @@ noise_image_test.NoiseImageTest: build-debug-check
 noise_image_test.GaussianNoiseImageTest: build-debug-check
 	@echo "Running GaussianNoiseImageTest..."
 	@$(TEST_EXEC_DEBUG) --gtest_filter="*GaussianNoiseImageTest*"
-
-.PHONY: noise_image_test.RemoveJYNoise
-noise_image_test.RemoveJYNoise: build-debug-check
-	@echo "Running RemoveJYNoise..."
-	@$(TEST_EXEC_DEBUG) --gtest_filter="*RemoveJYNoise*"
-
-.PHONY: noise_image_test.GaussianBilateralFilter
-noise_image_test.GaussianBilateralFilter: build-debug-check
-	@echo "Running GaussianBilateralFilter..."
-	@$(TEST_EXEC_DEBUG) --gtest_filter="*GaussianBilateralFilter*"
 
 
 

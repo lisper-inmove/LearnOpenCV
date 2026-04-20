@@ -206,4 +206,25 @@ int Tester::sharpenValue(cv::Mat &image) {
   }
   return sum;
 }
+
+int Tester::calculateLaplacianSum(const cv::Mat &src) {
+
+  int sum = 0;
+  int step = 1;
+  int h = src.rows;
+  int w = src.cols;
+  for (int i = 1; i < h - 1; i++) {
+    for (int j = 1; j < w - 1; j++) {
+      uint8_t v1 = src.at<uchar>(i, j);
+      uint8_t v2 = src.at<uchar>(i - step, j);
+      uint8_t v3 = src.at<uchar>(i, j - step);
+      uint8_t v4 = src.at<uchar>(i + step, j);
+      uint8_t v5 = src.at<uchar>(i, j + step);
+      sum += abs(v1 * 2 - v2 - v4);
+      sum += abs(v1 * 2 - v3 - v5);
+    }
+  }
+  return sum;
+}
+
 } // namespace cvtest::tester
