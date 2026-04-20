@@ -5,3 +5,7 @@ Testing
 *.log
 *.out
 *.toc
+build-debug
+build-release
+build-Debug
+build-Release

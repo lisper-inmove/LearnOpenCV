@@ -1,0 +1,222 @@
+# ============================================
+# LearnOpenCV_Test 测试模块配置
+# ============================================
+
+# 测试可执行文件名称
+TEST_EXECUTABLE := LearnOpenCV_Test
+
+# 测试源文件目录
+TEST_SRC_DIR := tests
+
+# 获取所有测试文件（排除 main.cc 和 pch.cc）
+TEST_SOURCES := $(wildcard $(TEST_SRC_DIR)/*.cc) $(wildcard $(TEST_SRC_DIR)/*.cpp)
+TEST_FILE_NAMES := $(basename $(notdir $(TEST_SOURCES)))
+TEST_FILE_NAMES := $(filter-out main pch, $(TEST_FILE_NAMES))
+
+# ============================================
+# 构建路径配置
+# ============================================
+
+# 检测实际存在的构建目录
+ifneq ($(wildcard build-Debug),)
+    BUILD_DIR_DEBUG_ACTUAL := build-Debug
+else
+    BUILD_DIR_DEBUG_ACTUAL := build-debug
+endif
+
+ifneq ($(wildcard build-Release),)
+    BUILD_DIR_RELEASE_ACTUAL := build-Release
+else
+    BUILD_DIR_RELEASE_ACTUAL := build-release
+endif
+
+# 查找测试可执行文件
+define find_test_exec
+$(firstword $(wildcard $(1)/bin/$(TEST_EXECUTABLE)) $(wildcard $(1)/$(TEST_EXECUTABLE)))
+endef
+
+TEST_EXEC_DEBUG := $(call find_test_exec,$(BUILD_DIR_DEBUG_ACTUAL))
+TEST_EXEC_RELEASE := $(call find_test_exec,$(BUILD_DIR_RELEASE_ACTUAL))
+
+# ============================================
+# 辅助函数
+# ============================================
+
+# 从测试文件中提取所有测试用例名称
+define get_test_cases_from_file
+$(shell grep -oP 'TEST_F\(\s*\w+\s*,\s*\K[^)]+' $(TEST_SRC_DIR)/$(1).cc 2>/dev/null)
+endef
+
+# ============================================
+# 构建检查
+# ============================================
+
+build-debug-check:
+	@if [ ! -f "$(TEST_EXEC_DEBUG)" ]; then \
+		echo "Debug executable not found, building..."; \
+		$(MAKE) debug; \
+	fi
+
+build-release-check:
+	@if [ ! -f "$(TEST_EXEC_RELEASE)" ]; then \
+		echo "Release executable not found, building..."; \
+		$(MAKE) release; \
+	fi
+
+# ============================================
+# 运行测试文件中的所有测试（修正版）
+# ============================================
+
+define run-test-file-all
+.PHONY: $(1)
+$(1): build-debug-check
+	@echo "========================================"
+	@echo "Running all tests in $(1).cc"
+	@echo "========================================"
+	@test_cases="$(call get_test_cases_from_file,$(1))"; \
+	if [ -z "$$test_cases" ]; then \
+		echo "Warning: No test cases found in $(1).cc"; \
+		echo "Available tests in this file:"; \
+		grep -n 'TEST_F' $(TEST_SRC_DIR)/$(1).cc 2>/dev/null || echo "  (none)"; \
+		exit 1; \
+	else \
+		echo "Found test case(s):"; \
+		for test_case in $$test_cases; do \
+			echo "  - $$test_case"; \
+		done; \
+		echo ""; \
+		count=0; \
+		passed=0; \
+		failed=0; \
+		for test_case in $$test_cases; do \
+			count=`expr $$count + 1`; \
+			echo "========================================"; \
+			echo "[$$count/`echo $$test_cases | wc -w`] Running: $$test_case"; \
+			echo "========================================"; \
+			if [ -f "$(TEST_EXEC_DEBUG)" ]; then \
+				if $(TEST_EXEC_DEBUG) --gtest_filter="*$$test_case*"; then \
+					passed=`expr $$passed + 1`; \
+				else \
+					failed=`expr $$failed + 1`; \
+				fi; \
+			else \
+				echo "Error: Test executable not found"; \
+				exit 1; \
+			fi; \
+			echo ""; \
+		done; \
+		echo "========================================"; \
+		echo "Summary for $(1).cc"; \
+		echo "========================================"; \
+		echo "Total: $$count, Passed: $$passed, Failed: $$failed"; \
+		if [ $$failed -ne 0 ]; then \
+			exit 1; \
+		fi; \
+	fi
+endef
+
+# 为每个测试文件生成运行规则
+$(foreach test_file,$(TEST_FILE_NAMES),\
+	$(eval $(call run-test-file-all,$(test_file)))\
+)
+
+# ============================================
+# 运行指定的测试用例（支持点号语法）
+# ============================================
+
+define run-test-case
+.PHONY: $(1).$(2)
+$(1).$(2): build-debug-check
+	@echo "Running test case: $(1).$(2)..."
+	@echo "========================================"
+	@if [ -f "$(TEST_EXEC_DEBUG)" ]; then \
+		$(TEST_EXEC_DEBUG) --gtest_filter="*$(2)*"; \
+	elif [ -f "$(TEST_EXEC_RELEASE)" ]; then \
+		$(TEST_EXEC_RELEASE) --gtest_filter="*$(2)*"; \
+	else \
+		echo "Error: $(TEST_EXECUTABLE) not found"; \
+		exit 1; \
+	fi
+endef
+
+# 手动定义已知的测试用例
+# CH1_basic_operation 文件中的测试用例
+$(eval $(call run-test-case,CH1_basic_operation,NamedWindowTest))
+$(eval $(call run-test-case,CH1_basic_operation,ReadWriteTest))
+$(eval $(call run-test-case,CH1_basic_operation,OpenVideo))
+
+# ============================================
+# 通用测试运行
+# ============================================
+
+# 运行所有测试
+test-all: build-debug-check
+	@echo "Running all tests..."
+	@if [ -f "$(TEST_EXEC_DEBUG)" ]; then \
+		$(TEST_EXEC_DEBUG); \
+	elif [ -f "$(TEST_EXEC_RELEASE)" ]; then \
+		$(TEST_EXEC_RELEASE); \
+	else \
+		echo "Error: $(TEST_EXECUTABLE) not found"; \
+		exit 1; \
+	fi
+
+# 运行匹配模式的测试
+test-pattern-%: build-debug-check
+	@pattern="$*"; \
+	echo "Running tests matching pattern: $$pattern"; \
+	if [ -f "$(TEST_EXEC_DEBUG)" ]; then \
+		$(TEST_EXEC_DEBUG) --gtest_filter="*$$pattern*"; \
+	elif [ -f "$(TEST_EXEC_RELEASE)" ]; then \
+		$(TEST_EXEC_RELEASE) --gtest_filter="*$$pattern*"; \
+	else \
+		echo "Error: $(TEST_EXECUTABLE) not found"; \
+		exit 1; \
+	fi
+
+# ============================================
+# 辅助功能
+# ============================================
+
+show-test-config:
+	@echo "=== Test Configuration ==="
+	@echo "TEST_EXECUTABLE: $(TEST_EXECUTABLE)"
+	@echo "TEST_SRC_DIR: $(TEST_SRC_DIR)"
+	@echo "TEST_FILE_NAMES: $(TEST_FILE_NAMES)"
+	@echo ""
+	@echo "=== Build Directories ==="
+	@echo "BUILD_DIR_DEBUG_ACTUAL: $(BUILD_DIR_DEBUG_ACTUAL)"
+	@echo "BUILD_DIR_RELEASE_ACTUAL: $(BUILD_DIR_RELEASE_ACTUAL)"
+	@echo "TEST_EXEC_DEBUG: $(TEST_EXEC_DEBUG)"
+	@echo "TEST_EXEC_RELEASE: $(TEST_EXEC_RELEASE)"
+
+list-test-files:
+	@echo "Available test files:"
+	@$(foreach file,$(TEST_FILE_NAMES),echo "  - $(file)";)
+	@echo ""
+	@echo "Usage examples:"
+	@echo "  make CH1_basic_operation                    # Run all tests in CH1_basic_operation.cc"
+	@echo "  make CH1_basic_operation.NamedWindowTest    # Run specific test case"
+	@echo "  make test-pattern-NamedWindow               # Run tests matching pattern"
+	@echo "  make test-all                               # Run all tests"
+
+list-test-cases-in-%: build-debug-check
+	@test_file="$*"; \
+	echo "Test cases in $$test_file.cc:"; \
+	grep -oP 'TEST_F\(\s*\w+\s*,\s*\K[^)]+' $(TEST_SRC_DIR)/$$test_file.cc 2>/dev/null || \
+	grep -oP 'TEST\(\s*\w+\s*,\s*\K[^)]+' $(TEST_SRC_DIR)/$$test_file.cc 2>/dev/null || \
+	echo "  (none found)"
+
+list-all-tests: build-debug-check
+	@if [ -f "$(TEST_EXEC_DEBUG)" ]; then \
+		echo "All test cases in $(TEST_EXECUTABLE):"; \
+		echo "========================================"; \
+		$(TEST_EXEC_DEBUG) --gtest_list_tests; \
+	elif [ -f "$(TEST_EXEC_RELEASE)" ]; then \
+		echo "All test cases in $(TEST_EXECUTABLE):"; \
+		echo "========================================"; \
+		$(TEST_EXEC_RELEASE) --gtest_list_tests; \
+	else \
+		echo "Error: $(TEST_EXECUTABLE) not found"; \
+		exit 1; \
+	fi

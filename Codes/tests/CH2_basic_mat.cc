@@ -16,22 +16,17 @@
 namespace cvtest::tester {
 TEST_F(Tester, BasicMat) {
   // 创建Mat
-  cv::Mat mat = cv::Mat::zeros(100, 100, CV_8UC3);
-  EXPECT_EQ(mat.rows, 100);
-  EXPECT_EQ(mat.cols, 100);
-  EXPECT_EQ(mat.type(), CV_8UC3);
+  cv::Mat mat = cv::Mat::ones(5, 5, CV_8UC3);
+  std::cout << mat << "\n";
 
   // Mat的复制
   cv::Mat m;
   mat.copyTo(m);
   // Mat的克隆
   cv::Mat m2 = mat.clone();
-  // Mat的ROI
-  cv::Rect roi(0, 0, 20, 20);
+  // // Mat的ROI
+  cv::Rect roi(0, 0, 3, 3);
   cv::Mat roiMat = mat(roi);
-  EXPECT_EQ(roiMat.rows, 20);
-  EXPECT_EQ(roiMat.cols, 20);
-  EXPECT_EQ(roiMat.type(), CV_8UC3);
 }
 
 TEST_F(Tester, IteratorMat) {

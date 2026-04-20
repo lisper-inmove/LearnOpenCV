@@ -13,7 +13,7 @@
 #include <string>
 
 namespace cvtest::tester {
-TEST_F(Tester, GradientTest) {
+TEST_F(Tester, OldGradientTest) {
   /**
    * a0, a1, a2
    * a7, M,  a3
@@ -37,7 +37,7 @@ TEST_F(Tester, GradientTest) {
    * */
 }
 
-TEST_F(Tester, SobelTest) {
+TEST_F(Tester, OldSobelTest) {
   /**
    * void cv::Sobel(
    *  InputArray src,
@@ -62,7 +62,7 @@ TEST_F(Tester, SobelTest) {
   cv::destroyAllWindows();
 }
 
-TEST_F(Tester, ScharrTest) {
+TEST_F(Tester, OldScharrTest) {
   /**
    * void cv::Scharr(
    *  InputArray src,
@@ -87,7 +87,7 @@ TEST_F(Tester, ScharrTest) {
   cv::destroyAllWindows();
 }
 
-TEST_F(Tester, LaplacianTest) {
+TEST_F(Tester, OldLaplacianTest) {
   /** 拉普拉斯算子
    * kernel = 0 -1 0
    *         -1 4 -1
@@ -124,7 +124,7 @@ TEST_F(Tester, LaplacianTest) {
   cv::destroyAllWindows();
 }
 
-TEST_F(Tester, CalculateSharpen) {
+TEST_F(Tester, OldCalculateSharpen) {
   /** 计算图像锐度
    * */
 
