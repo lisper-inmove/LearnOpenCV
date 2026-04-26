@@ -17,7 +17,7 @@
 #include <sys/wait.h>
 
 /**
- * 第四章: 卷积操作
+ * 第六章: 二值图像
  * */
 
 namespace cvtest::tester {

@@ -14,7 +14,7 @@
 #include <string>
 
 /**
- * 第三章: 图像直方图
+ * 第四章: 图像直方图
  * */
 
 namespace cvtest::tester {
