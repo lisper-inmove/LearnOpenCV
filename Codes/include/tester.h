@@ -19,6 +19,8 @@ public:
 protected:
   std::string assets_ = "/home/inmove/nvme1/Learn/LearnOpenCV/Codes/assets/";
   std::string filepath_ = std::filesystem::path(assets_) / "bee.png";
+  std::string coinsPath_ = std::filesystem::path(assets_) / "coins.jpg";
+  std::string sudokuPath_ = std::filesystem::path(assets_) / "sudoku.png";
   std::string cxPath_ = std::filesystem::path(assets_) / "xt.png";
   std::string grape_ = std::filesystem::path(assets_) / "grape.png";
   std::string grapeTpl_ = std::filesystem::path(assets_) / "grape_tpl.png";
