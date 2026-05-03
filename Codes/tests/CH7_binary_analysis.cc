@@ -3,11 +3,13 @@
 #include "gtest/gtest.h"
 #include <array>
 #include <cmath>
+#include <cstddef>
 #include <cstdlib>
 #include <iostream>
 #include <opencv2/core.hpp>
 #include <opencv2/core/base.hpp>
 #include <opencv2/core/cvdef.h>
+#include <opencv2/core/cvstd_wrapper.hpp>
 #include <opencv2/core/fast_math.hpp>
 #include <opencv2/core/hal/interface.h>
 #include <opencv2/core/mat.hpp>
@@ -245,7 +247,65 @@ TEST_F(Tester, MomentsTest) {
    *  Inputarray points,
    *  bool binaryImage = false
    * )
+   * 通过moments函数可以计算出 几何矩，中心矩和中心归一化矩
+   *
+   * 根据该函数输出的Moments可以得到胡矩
+   * void cv::HuMoments(
+   *  const Moments& moments,
+   *  double hu[7]
+   * )
+   *
+   * 然后用胡矩作为输入，对轮廓进行匹配
+   * double cv::matchShapes(
+   *  InputArray contour1,
+   *  InputArray contour2,
+   *  int method,
+   *  double parameter
+   * )
+   *
+   * method:
+   *  1. CONTOURS_MATCH_I1
+   *  2. CONTOURS_MATCH_I2
+   *  3. CONTOURS_MATCH_I3
    * */
+  cv::Mat imageA, grayA;
+  cv::Mat imageABC, grayABC;
+  imageA = cv::imread(aPath_);
+  cv::cvtColor(imageA, grayA, cv::COLOR_BGR2GRAY);
+  imageABC = cv::imread(abcPath_);
+  cv::cvtColor(imageABC, grayABC, cv::COLOR_BGR2GRAY);
+
+  std::vector<std::vector<cv::Point>> contoursA;
+  std::vector<std::vector<cv::Point>> contoursABC;
+  std::vector<cv::Vec4i> hierarchyA;
+  std::vector<cv::Vec4i> hierarchyABC;
+
+  cv::findContours(grayA, contoursA, hierarchyA, cv::RETR_EXTERNAL,
+                   cv::CHAIN_APPROX_SIMPLE);
+  cv::findContours(grayABC, contoursABC, hierarchyABC, cv::RETR_EXTERNAL,
+                   cv::CHAIN_APPROX_SIMPLE);
+
+  cv::Moments mmA = cv::moments(contoursA[0]);
+  cv::Mat huA;
+  cv::HuMoments(mmA, huA);
+
+  for (auto &contour : contoursABC) {
+    cv::Moments mm = cv::moments(contour);
+    cv::Mat hum;
+    cv::HuMoments(mm, hum);
+    double dist = cv::matchShapes(hum, huA, cv::CONTOURS_MATCH_I1, 0);
+    if (dist < 1) {
+      std::cout << "Matched " << dist << "\n";
+      cv::Rect box = cv::boundingRect(contour);
+      cv::rectangle(imageABC, box, green_, 2, 8, 0);
+    }
+  }
+
+  cv::imshow("Leeter A", imageA);
+  cv::imshow("Leeter ABC", imageABC);
+
+  cv::waitKey(30000);
+  cv::destroyAllWindows();
 }
 
 TEST_F(Tester, FitAndApproxTest) {
@@ -492,6 +552,7 @@ TEST_F(Tester, LineDetectionTest) {
    * 直线检测
    *
    * 霍夫变换: https://zhuanlan.zhihu.com/p/203292567
+   *           https://www.youtube.com/watch?v=XRBc_xkZREg&t=667s
    *
    * 霍夫直线检测: 用于检测图像中的直线
    * void cv::HoughLines(
@@ -609,6 +670,97 @@ TEST_F(Tester, HoughCircleTest) {
     cv::circle(image, center, 3, cv::Scalar(255, 0, 0), 3, 8, 0);
   }
   cv::imshow("HoughCircles", image);
+  cv::waitKey(30000);
+  cv::destroyAllWindows();
+}
+
+TEST_F(Tester, MinEnclosingCircleTest) {
+  /**
+   * 最小外接圆
+   * */
+  cv::Mat image = cv::imread(rectContourPath_);
+  cv::Mat gray;
+  cv::cvtColor(image, gray, cv::COLOR_BGR2GRAY);
+  std::vector<std::vector<cv::Point>> contours;
+  std::vector<cv::Vec4i> hierarchy;
+  cv::findContours(gray, contours, hierarchy, cv::RETR_EXTERNAL,
+                   cv::CHAIN_APPROX_SIMPLE);
+  for (auto &contour : contours) {
+    cv::Point2f pt;
+    float radius;
+    cv::minEnclosingCircle(contour, pt, radius);
+    cv::circle(image, pt, radius, blue_, 2, 8, 0);
+  }
+
+  cv::imshow("Source Image", image);
+  cv::waitKey(30000);
+  cv::destroyAllWindows();
+}
+
+TEST_F(Tester, PolygonTest) {
+  /**
+   * 用多边形测试函数来画出最大内接圆
+   * */
+  cv::Mat image = cv::imread(rectContourPath_);
+  cv::Mat gray;
+  cv::cvtColor(image, gray, cv::COLOR_BGR2GRAY);
+  std::vector<std::vector<cv::Point>> contours;
+  std::vector<cv::Vec4i> hierarchy;
+  cv::findContours(gray, contours, hierarchy, cv::RETR_EXTERNAL,
+                   cv::CHAIN_APPROX_SIMPLE);
+  for (auto &contour : contours) {
+    cv::Mat rawDist(image.size(), CV_32F);
+    for (int i = 0; i < image.rows; i++) {
+      for (int j = 0; j < image.cols; j++) {
+        rawDist.at<float>(i, j) = (float)cv::pointPolygonTest(
+            contour, cv::Point2f((float)j, (float)i), true);
+      }
+    }
+    double minVal, maxVal;
+    cv::Point maxDistPt;
+    cv::minMaxLoc(rawDist, &minVal, &maxVal, nullptr, &maxDistPt);
+    minVal = abs(minVal);
+    maxVal = abs(maxVal);
+    cv::circle(image, maxDistPt, maxVal, blue_, 2, 8, 0);
+  }
+
+  cv::imshow("Source Image", image);
+  cv::waitKey(30000);
+  cv::destroyAllWindows();
+}
+
+TEST_F(Tester, ConvexHullTest) {
+  /**
+   * 凸包检测
+   * void cv::convexHull(
+   *  InputArray points,
+   *  OutputArray hull,
+   *  bool clockwise = false,
+   *  bool returnPoints = true
+   * )
+   *
+   * bool cv::isContourConvex(
+   *  InputArray contour
+   * )
+   * */
+  cv::Mat image = cv::imread(convexPath_);
+  cv::Mat gray;
+  cv::cvtColor(image, gray, cv::COLOR_BGR2GRAY);
+  std::vector<std::vector<cv::Point>> contours;
+  std::vector<cv::Vec4i> hierarchy;
+  cv::findContours(gray, contours, hierarchy, cv::RETR_EXTERNAL,
+                   cv::CHAIN_APPROX_SIMPLE);
+  for (auto &contour : contours) {
+    std::vector<cv::Point> hull;
+    cv::convexHull(contour, hull);
+    bool isHull = cv::isContourConvex(contour);
+    int len = hull.size();
+    for (int i = 0; i < len; i++) {
+      cv::circle(image, hull[i], 4, blue_, 2, 8, 0);
+      cv::line(image, hull[i % len], hull[(i + 1) % len], red_, 2, 8, 0);
+    }
+  }
+  cv::imshow("Hull Detect", image);
   cv::waitKey(30000);
   cv::destroyAllWindows();
 }
