@@ -9,6 +9,7 @@
 #include <opencv2/core/hal/interface.h>
 #include <opencv2/core/mat.hpp>
 #include <opencv2/core/types.hpp>
+#include <opencv2/cudaarithm.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc.hpp>
@@ -53,6 +54,21 @@ TEST_F(Tester, ThresholdTest) {
   cv::imshow("Source Image", image);
   cv::imshow("Gray Image", gray);
   cv::imshow("Binary", binary);
+  cv::waitKey(30000);
+  cv::destroyAllWindows();
+}
+
+TEST_F(Tester, ThresholdCUDATest) {
+  cv::Mat image = cv::imread(filepath_, cv::IMREAD_GRAYSCALE);
+  cv::cuda::GpuMat srcGpu, dstGpu;
+  srcGpu.upload(image);
+  double threshold = 128;
+  double maxval = 255;
+  int type = cv::THRESH_BINARY;
+  cv::cuda::threshold(srcGpu, dstGpu, threshold, maxval, type);
+  cv::Mat dstCpu;
+  dstGpu.download(dstCpu);
+  cv::imshow("Result", dstCpu);
   cv::waitKey(30000);
   cv::destroyAllWindows();
 }
