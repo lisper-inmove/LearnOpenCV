@@ -158,7 +158,7 @@ TEST_F(Tester, DrawContoursTest) {
    *  2~maxLevel 以此类推
    * */
   cv::Mat image, gray;
-  image = cv::imread(cxPath_);
+  image = cv::imread(xtPath_);
   cv::cvtColor(image, gray, cv::COLOR_BGR2GRAY);
   std::vector<std::vector<cv::Point>> contours;
   std::vector<cv::Vec4i> hierarchy;
