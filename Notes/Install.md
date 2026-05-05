@@ -71,6 +71,7 @@
           -D WITH_NVCUVID=OFF \
           -D WITH_NVCUVENC=OFF \
           -D CUDA_TOOLKIT_ROOT_DIR=/usr/local/cuda-13.0 \
+          -D CMAKE_CUDA_COMPILER=/usr/local/cuda-13.0/bin/nvcc \
           ..
 
 
