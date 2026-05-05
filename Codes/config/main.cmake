@@ -1,3 +1,4 @@
+message(STATUS "Add ${PROJECT_NAME} main success")
 file(GLOB_RECURSE SOURCES "src/*.cc")
 
 # 添加可执行文件

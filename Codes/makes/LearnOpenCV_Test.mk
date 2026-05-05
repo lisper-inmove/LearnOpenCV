@@ -35,7 +35,7 @@ AppendX_Qt_Support: build-debug-check
 	@echo "========================================"
 	@echo "Running all tests in AppendX_Qt_Support.cc"
 	@echo "========================================"
-	@$(TEST_EXEC_DEBUG) --gtest_filter="*QtSupportTest*:*CudaDeviceAvailableTest*"
+	@$(TEST_EXEC_DEBUG) --gtest_filter="*QtSupportTest*:*CudaDeviceAvailableTest*:*CudaPerformanceTest*"
 
 .PHONY: AppendX_Qt_Support.QtSupportTest
 AppendX_Qt_Support.QtSupportTest: build-debug-check
@@ -46,6 +46,11 @@ AppendX_Qt_Support.QtSupportTest: build-debug-check
 AppendX_Qt_Support.CudaDeviceAvailableTest: build-debug-check
 	@echo "Running CudaDeviceAvailableTest..."
 	@$(TEST_EXEC_DEBUG) --gtest_filter="*CudaDeviceAvailableTest*"
+
+.PHONY: AppendX_Qt_Support.CudaPerformanceTest
+AppendX_Qt_Support.CudaPerformanceTest: build-debug-check
+	@echo "Running CudaPerformanceTest..."
+	@$(TEST_EXEC_DEBUG) --gtest_filter="*CudaPerformanceTest*"
 
 
 # ============================================
@@ -265,12 +270,17 @@ CH6_binary_image: build-debug-check
 	@echo "========================================"
 	@echo "Running all tests in CH6_binary_image.cc"
 	@echo "========================================"
-	@$(TEST_EXEC_DEBUG) --gtest_filter="*ThresholdTest*:*OTSUMethod*:*TriangleMethod*:*AdaptiveThresholdTest*:*InRangeBinary*"
+	@$(TEST_EXEC_DEBUG) --gtest_filter="*ThresholdTest*:*ThresholdCUDATest*:*OTSUMethod*:*TriangleMethod*:*AdaptiveThresholdTest*:*InRangeBinary*"
 
 .PHONY: CH6_binary_image.ThresholdTest
 CH6_binary_image.ThresholdTest: build-debug-check
 	@echo "Running ThresholdTest..."
 	@$(TEST_EXEC_DEBUG) --gtest_filter="*ThresholdTest*"
+
+.PHONY: CH6_binary_image.ThresholdCUDATest
+CH6_binary_image.ThresholdCUDATest: build-debug-check
+	@echo "Running ThresholdCUDATest..."
+	@$(TEST_EXEC_DEBUG) --gtest_filter="*ThresholdCUDATest*"
 
 .PHONY: CH6_binary_image.OTSUMethod
 CH6_binary_image.OTSUMethod: build-debug-check

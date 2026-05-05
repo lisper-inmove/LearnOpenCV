@@ -4,6 +4,8 @@ enable_testing()
 
 set(TEST_NAME "LearnOpenCV_Test")
 
+message(STATUS "Add ${TEST_NAME} googletest success")
+
 file(GLOB_RECURSE SRC_LIST CONFIGURE_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cc)
 file(GLOB_RECURSE TEST_SRC_LIST CONFIGURE_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/tests/*.cc)
 

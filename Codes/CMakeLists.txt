@@ -9,6 +9,8 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # 生成编译命令数据库（用于VSCode等IDE）
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+message(STATUS "Current build type: ${CMAKE_BUILD_TYPE}")
+
 # 设置编译选项
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     # 启用更多警告
