@@ -1,7 +1,7 @@
 message(STATUS "OpenCV_DIR: ${OpenCV_DIR}")
 
-set(OpenCV_DIR "/home/inmove/.opt/opencv-qt/lib/cmake/opencv4")
-set(OpenCV_LIB_PATH "/home/inmove/.opt/opencv-qt/lib")
+set(OpenCV_DIR "/home/inmove/.opt/opencv_cuda/lib/cmake/opencv4")
+set(OpenCV_LIB_PATH "/home/inmove/.opt/opencv_cuda/lib")
 
 # 查找OpenCV库
 find_package(OpenCV REQUIRED)

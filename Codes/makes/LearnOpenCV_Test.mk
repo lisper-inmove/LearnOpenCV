@@ -35,12 +35,17 @@ AppendX_Qt_Support: build-debug-check
 	@echo "========================================"
 	@echo "Running all tests in AppendX_Qt_Support.cc"
 	@echo "========================================"
-	@$(TEST_EXEC_DEBUG) --gtest_filter="*QtSupportTest*"
+	@$(TEST_EXEC_DEBUG) --gtest_filter="*QtSupportTest*:*CudaDeviceAvailableTest*"
 
 .PHONY: AppendX_Qt_Support.QtSupportTest
 AppendX_Qt_Support.QtSupportTest: build-debug-check
 	@echo "Running QtSupportTest..."
 	@$(TEST_EXEC_DEBUG) --gtest_filter="*QtSupportTest*"
+
+.PHONY: AppendX_Qt_Support.CudaDeviceAvailableTest
+AppendX_Qt_Support.CudaDeviceAvailableTest: build-debug-check
+	@echo "Running CudaDeviceAvailableTest..."
+	@$(TEST_EXEC_DEBUG) --gtest_filter="*CudaDeviceAvailableTest*"
 
 
 # ============================================
@@ -52,7 +57,7 @@ CH1_basic_operation: build-debug-check
 	@echo "========================================"
 	@echo "Running all tests in CH1_basic_operation.cc"
 	@echo "========================================"
-	@$(TEST_EXEC_DEBUG) --gtest_filter="*NamedWindowTest*:*ReadWriteTest*:*OpenVideo*"
+	@$(TEST_EXEC_DEBUG) --gtest_filter="*NamedWindowTest*:*ReadWriteTest*:*OpenVideo*:*NormalizeTest*"
 
 .PHONY: CH1_basic_operation.NamedWindowTest
 CH1_basic_operation.NamedWindowTest: build-debug-check
@@ -68,6 +73,11 @@ CH1_basic_operation.ReadWriteTest: build-debug-check
 CH1_basic_operation.OpenVideo: build-debug-check
 	@echo "Running OpenVideo..."
 	@$(TEST_EXEC_DEBUG) --gtest_filter="*OpenVideo*"
+
+.PHONY: CH1_basic_operation.NormalizeTest
+CH1_basic_operation.NormalizeTest: build-debug-check
+	@echo "Running NormalizeTest..."
+	@$(TEST_EXEC_DEBUG) --gtest_filter="*NormalizeTest*"
 
 
 # ============================================
@@ -247,104 +257,179 @@ CH5_convolution.LaplacianTest: build-debug-check
 
 
 # ============================================
-# connective_label 测试规则
+# CH6_binary_image 测试规则
 # ============================================
 
-.PHONY: connective_label
-connective_label: build-debug-check
+.PHONY: CH6_binary_image
+CH6_binary_image: build-debug-check
 	@echo "========================================"
-	@echo "Running all tests in connective_label.cc"
+	@echo "Running all tests in CH6_binary_image.cc"
 	@echo "========================================"
-	@$(TEST_EXEC_DEBUG) --gtest_filter="*ConnectedComponentTest*:*ConnectedComponentWithStatsTest*"
+	@$(TEST_EXEC_DEBUG) --gtest_filter="*ThresholdTest*:*OTSUMethod*:*TriangleMethod*:*AdaptiveThresholdTest*:*InRangeBinary*"
 
-.PHONY: connective_label.ConnectedComponentTest
-connective_label.ConnectedComponentTest: build-debug-check
-	@echo "Running ConnectedComponentTest..."
-	@$(TEST_EXEC_DEBUG) --gtest_filter="*ConnectedComponentTest*"
+.PHONY: CH6_binary_image.ThresholdTest
+CH6_binary_image.ThresholdTest: build-debug-check
+	@echo "Running ThresholdTest..."
+	@$(TEST_EXEC_DEBUG) --gtest_filter="*ThresholdTest*"
 
-.PHONY: connective_label.ConnectedComponentWithStatsTest
-connective_label.ConnectedComponentWithStatsTest: build-debug-check
-	@echo "Running ConnectedComponentWithStatsTest..."
-	@$(TEST_EXEC_DEBUG) --gtest_filter="*ConnectedComponentWithStatsTest*"
+.PHONY: CH6_binary_image.OTSUMethod
+CH6_binary_image.OTSUMethod: build-debug-check
+	@echo "Running OTSUMethod..."
+	@$(TEST_EXEC_DEBUG) --gtest_filter="*OTSUMethod*"
+
+.PHONY: CH6_binary_image.TriangleMethod
+CH6_binary_image.TriangleMethod: build-debug-check
+	@echo "Running TriangleMethod..."
+	@$(TEST_EXEC_DEBUG) --gtest_filter="*TriangleMethod*"
+
+.PHONY: CH6_binary_image.AdaptiveThresholdTest
+CH6_binary_image.AdaptiveThresholdTest: build-debug-check
+	@echo "Running AdaptiveThresholdTest..."
+	@$(TEST_EXEC_DEBUG) --gtest_filter="*AdaptiveThresholdTest*"
+
+.PHONY: CH6_binary_image.InRangeBinary
+CH6_binary_image.InRangeBinary: build-debug-check
+	@echo "Running InRangeBinary..."
+	@$(TEST_EXEC_DEBUG) --gtest_filter="*InRangeBinary*"
 
 
 # ============================================
-# find_contour_test 测试规则
+# CH7_binary_analysis 测试规则
 # ============================================
 
-.PHONY: find_contour_test
-find_contour_test: build-debug-check
+.PHONY: CH7_binary_analysis
+CH7_binary_analysis: build-debug-check
 	@echo "========================================"
-	@echo "Running all tests in find_contour_test.cc"
+	@echo "Running all tests in CH7_binary_analysis.cc"
 	@echo "========================================"
-	@$(TEST_EXEC_DEBUG) --gtest_filter="*FindConttourTest*:*ConttourMeasureTest*:*EllipseFitTest*:*LineFitTest*:*ContourApproxTest*:*ContourAnalysisTest*"
+	@$(TEST_EXEC_DEBUG) --gtest_filter="*BinaryMethodCompareTest*:*ConnectedComponentLabelingTest*:*FindContoursTest*:*DrawContoursTest*:*ContourMeatureTest*:*MomentsTest*:*FitAndApproxTest*:*EllipseFitTest*:*LineFitTest*:*ApproxPolyDPTest*:*ContourAnalysisTest*:*LineDetectionTest*:*HoughCircleTest*:*MinEnclosingCircleTest*:*PolygonTest*:*ConvexHullTest*"
 
-.PHONY: find_contour_test.FindConttourTest
-find_contour_test.FindConttourTest: build-debug-check
-	@echo "Running FindConttourTest..."
-	@$(TEST_EXEC_DEBUG) --gtest_filter="*FindConttourTest*"
+.PHONY: CH7_binary_analysis.BinaryMethodCompareTest
+CH7_binary_analysis.BinaryMethodCompareTest: build-debug-check
+	@echo "Running BinaryMethodCompareTest..."
+	@$(TEST_EXEC_DEBUG) --gtest_filter="*BinaryMethodCompareTest*"
 
-.PHONY: find_contour_test.ConttourMeasureTest
-find_contour_test.ConttourMeasureTest: build-debug-check
-	@echo "Running ConttourMeasureTest..."
-	@$(TEST_EXEC_DEBUG) --gtest_filter="*ConttourMeasureTest*"
+.PHONY: CH7_binary_analysis.ConnectedComponentLabelingTest
+CH7_binary_analysis.ConnectedComponentLabelingTest: build-debug-check
+	@echo "Running ConnectedComponentLabelingTest..."
+	@$(TEST_EXEC_DEBUG) --gtest_filter="*ConnectedComponentLabelingTest*"
 
-.PHONY: find_contour_test.EllipseFitTest
-find_contour_test.EllipseFitTest: build-debug-check
+.PHONY: CH7_binary_analysis.FindContoursTest
+CH7_binary_analysis.FindContoursTest: build-debug-check
+	@echo "Running FindContoursTest..."
+	@$(TEST_EXEC_DEBUG) --gtest_filter="*FindContoursTest*"
+
+.PHONY: CH7_binary_analysis.DrawContoursTest
+CH7_binary_analysis.DrawContoursTest: build-debug-check
+	@echo "Running DrawContoursTest..."
+	@$(TEST_EXEC_DEBUG) --gtest_filter="*DrawContoursTest*"
+
+.PHONY: CH7_binary_analysis.ContourMeatureTest
+CH7_binary_analysis.ContourMeatureTest: build-debug-check
+	@echo "Running ContourMeatureTest..."
+	@$(TEST_EXEC_DEBUG) --gtest_filter="*ContourMeatureTest*"
+
+.PHONY: CH7_binary_analysis.MomentsTest
+CH7_binary_analysis.MomentsTest: build-debug-check
+	@echo "Running MomentsTest..."
+	@$(TEST_EXEC_DEBUG) --gtest_filter="*MomentsTest*"
+
+.PHONY: CH7_binary_analysis.FitAndApproxTest
+CH7_binary_analysis.FitAndApproxTest: build-debug-check
+	@echo "Running FitAndApproxTest..."
+	@$(TEST_EXEC_DEBUG) --gtest_filter="*FitAndApproxTest*"
+
+.PHONY: CH7_binary_analysis.EllipseFitTest
+CH7_binary_analysis.EllipseFitTest: build-debug-check
 	@echo "Running EllipseFitTest..."
 	@$(TEST_EXEC_DEBUG) --gtest_filter="*EllipseFitTest*"
 
-.PHONY: find_contour_test.LineFitTest
-find_contour_test.LineFitTest: build-debug-check
+.PHONY: CH7_binary_analysis.LineFitTest
+CH7_binary_analysis.LineFitTest: build-debug-check
 	@echo "Running LineFitTest..."
 	@$(TEST_EXEC_DEBUG) --gtest_filter="*LineFitTest*"
 
-.PHONY: find_contour_test.ContourApproxTest
-find_contour_test.ContourApproxTest: build-debug-check
-	@echo "Running ContourApproxTest..."
-	@$(TEST_EXEC_DEBUG) --gtest_filter="*ContourApproxTest*"
+.PHONY: CH7_binary_analysis.ApproxPolyDPTest
+CH7_binary_analysis.ApproxPolyDPTest: build-debug-check
+	@echo "Running ApproxPolyDPTest..."
+	@$(TEST_EXEC_DEBUG) --gtest_filter="*ApproxPolyDPTest*"
 
-.PHONY: find_contour_test.ContourAnalysisTest
-find_contour_test.ContourAnalysisTest: build-debug-check
+.PHONY: CH7_binary_analysis.ContourAnalysisTest
+CH7_binary_analysis.ContourAnalysisTest: build-debug-check
 	@echo "Running ContourAnalysisTest..."
 	@$(TEST_EXEC_DEBUG) --gtest_filter="*ContourAnalysisTest*"
 
+.PHONY: CH7_binary_analysis.LineDetectionTest
+CH7_binary_analysis.LineDetectionTest: build-debug-check
+	@echo "Running LineDetectionTest..."
+	@$(TEST_EXEC_DEBUG) --gtest_filter="*LineDetectionTest*"
+
+.PHONY: CH7_binary_analysis.HoughCircleTest
+CH7_binary_analysis.HoughCircleTest: build-debug-check
+	@echo "Running HoughCircleTest..."
+	@$(TEST_EXEC_DEBUG) --gtest_filter="*HoughCircleTest*"
+
+.PHONY: CH7_binary_analysis.MinEnclosingCircleTest
+CH7_binary_analysis.MinEnclosingCircleTest: build-debug-check
+	@echo "Running MinEnclosingCircleTest..."
+	@$(TEST_EXEC_DEBUG) --gtest_filter="*MinEnclosingCircleTest*"
+
+.PHONY: CH7_binary_analysis.PolygonTest
+CH7_binary_analysis.PolygonTest: build-debug-check
+	@echo "Running PolygonTest..."
+	@$(TEST_EXEC_DEBUG) --gtest_filter="*PolygonTest*"
+
+.PHONY: CH7_binary_analysis.ConvexHullTest
+CH7_binary_analysis.ConvexHullTest: build-debug-check
+	@echo "Running ConvexHullTest..."
+	@$(TEST_EXEC_DEBUG) --gtest_filter="*ConvexHullTest*"
+
 
 # ============================================
-# gradient_test 测试规则
+# CH8_morphology 测试规则
 # ============================================
 
-.PHONY: gradient_test
-gradient_test: build-debug-check
+.PHONY: CH8_morphology
+CH8_morphology: build-debug-check
 	@echo "========================================"
-	@echo "Running all tests in gradient_test.cc"
+	@echo "Running all tests in CH8_morphology.cc"
 	@echo "========================================"
-	@$(TEST_EXEC_DEBUG) --gtest_filter="*OldGradientTest*:*OldSobelTest*:*OldScharrTest*:*OldLaplacianTest*:*OldCalculateSharpen*"
+	@$(TEST_EXEC_DEBUG) --gtest_filter="*MorphologyTest*:*DilateErodeTest*:*OpenCloseTest*:*MorphGradientTest*:*EdgeDetectTest*:*HatTest*:*HitTest*"
 
-.PHONY: gradient_test.OldGradientTest
-gradient_test.OldGradientTest: build-debug-check
-	@echo "Running OldGradientTest..."
-	@$(TEST_EXEC_DEBUG) --gtest_filter="*OldGradientTest*"
+.PHONY: CH8_morphology.MorphologyTest
+CH8_morphology.MorphologyTest: build-debug-check
+	@echo "Running MorphologyTest..."
+	@$(TEST_EXEC_DEBUG) --gtest_filter="*MorphologyTest*"
 
-.PHONY: gradient_test.OldSobelTest
-gradient_test.OldSobelTest: build-debug-check
-	@echo "Running OldSobelTest..."
-	@$(TEST_EXEC_DEBUG) --gtest_filter="*OldSobelTest*"
+.PHONY: CH8_morphology.DilateErodeTest
+CH8_morphology.DilateErodeTest: build-debug-check
+	@echo "Running DilateErodeTest..."
+	@$(TEST_EXEC_DEBUG) --gtest_filter="*DilateErodeTest*"
 
-.PHONY: gradient_test.OldScharrTest
-gradient_test.OldScharrTest: build-debug-check
-	@echo "Running OldScharrTest..."
-	@$(TEST_EXEC_DEBUG) --gtest_filter="*OldScharrTest*"
+.PHONY: CH8_morphology.OpenCloseTest
+CH8_morphology.OpenCloseTest: build-debug-check
+	@echo "Running OpenCloseTest..."
+	@$(TEST_EXEC_DEBUG) --gtest_filter="*OpenCloseTest*"
 
-.PHONY: gradient_test.OldLaplacianTest
-gradient_test.OldLaplacianTest: build-debug-check
-	@echo "Running OldLaplacianTest..."
-	@$(TEST_EXEC_DEBUG) --gtest_filter="*OldLaplacianTest*"
+.PHONY: CH8_morphology.MorphGradientTest
+CH8_morphology.MorphGradientTest: build-debug-check
+	@echo "Running MorphGradientTest..."
+	@$(TEST_EXEC_DEBUG) --gtest_filter="*MorphGradientTest*"
 
-.PHONY: gradient_test.OldCalculateSharpen
-gradient_test.OldCalculateSharpen: build-debug-check
-	@echo "Running OldCalculateSharpen..."
-	@$(TEST_EXEC_DEBUG) --gtest_filter="*OldCalculateSharpen*"
+.PHONY: CH8_morphology.EdgeDetectTest
+CH8_morphology.EdgeDetectTest: build-debug-check
+	@echo "Running EdgeDetectTest..."
+	@$(TEST_EXEC_DEBUG) --gtest_filter="*EdgeDetectTest*"
+
+.PHONY: CH8_morphology.HatTest
+CH8_morphology.HatTest: build-debug-check
+	@echo "Running HatTest..."
+	@$(TEST_EXEC_DEBUG) --gtest_filter="*HatTest*"
+
+.PHONY: CH8_morphology.HitTest
+CH8_morphology.HitTest: build-debug-check
+	@echo "Running HitTest..."
+	@$(TEST_EXEC_DEBUG) --gtest_filter="*HitTest*"
 
 
 # ============================================

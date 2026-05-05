@@ -47,27 +47,32 @@
     sudo apt-get -y install cuda-toolkit-12-8
 
     cmake -D CMAKE_BUILD_TYPE=RELEASE \
-          -D CMAKE_INSTALL_PREFIX=~/opencv_cuda \
+          -D CMAKE_INSTALL_PREFIX=~/.opt/opencv_cuda \
           -D CMAKE_CXX_STANDARD=17 \
-          -D CMAKE_CXX_STANDARD_REQUIRED=ON \
           -D WITH_CUDA=ON \
           -D WITH_CUDNN=ON \
-          -D DBUILD_opencv_cudev=ON \
+          -D BUILD_opencv_cudev=ON \
           -D ENABLE_FAST_MATH=ON \
           -D CUDA_FAST_MATH=ON \
-          -D CUDA_ARCH_BIN=8.9 \
-          -D CUDA_ARCH_PTX="" \
           -D WITH_CUBLAS=ON \
-          -D OPENCV_EXTRA_MODULES_PATH=/home/inmove/nvme1/SourceCodes/opencv_contrib/modules \
+          -D CUDA_ARCH_BIN="9.0" \
+          -D CUDA_ARCH_PTX="9.0" \
+          -D CMAKE_CUDA_ARCHITECTURES="90" \
+          -D OPENCV_EXTRA_MODULES_PATH=/home/inmove/nvme1/SourceCodes/opencv_contrib-github/modules \
           -D BUILD_EXAMPLES=ON \
           -D BUILD_TESTS=OFF \
           -D BUILD_PERF_TESTS=OFF \
           -D OPENCV_GENERATE_PKGCONFIG=ON \
           -D WITH_GTK=ON \
           -D WITH_FFMPEG=ON \
-          -D CUDA_CUDA_LIBRARY=/usr/local/cuda-13.2/lib64/stubs/libcuda.so \
           -D CMAKE_CXX_FLAGS="-DCCCL_IGNORE_DEPRECATED_CPP_DIALECT" \
+          -D CMAKE_CUDA_FLAGS="-allow-unsupported-compiler" \
+          -D CUDA_TOOLKIT_ROOT_DIR=/usr/local/cuda \
+          -D WITH_NVCUVID=OFF \
+          -D WITH_NVCUVENC=OFF \
+          -D CUDA_TOOLKIT_ROOT_DIR=/usr/local/cuda-13.0 \
           ..
+
 
 # 不支持cuda
 
